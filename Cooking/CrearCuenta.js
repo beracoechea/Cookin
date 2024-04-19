@@ -1,44 +1,39 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 
 export default class CrearCuenta extends Component {
   state = {
-    nombre: '',
-    edad: '',
-    paswoord: '',
-    correo: ''
+    correo: '',
+    contraseña: '',
+    isCamposVacios: true,
+    isContraseñaCorta: true,
   };
 
+  onPressRegistrar = () => {
+    this.props.navigation.navigate('CreacionPerfil', { correo: this.state.correo });
+  };
+
+  componentDidUpdate() {
+    const { correo, contraseña } = this.state;
+    const isCamposVacios = correo.trim() === '' || contraseña.trim() === '';
+    const isContraseñaCorta = contraseña.length < 8;
+
+    // Actualizar el estado para reflejar si los campos están vacíos o si la contraseña es corta
+    if (isCamposVacios !== this.state.isCamposVacios || isContraseñaCorta !== this.state.isContraseñaCorta) {
+      this.setState({ isCamposVacios, isContraseñaCorta });
+    }
+  }
 
   render() {
+    const { isCamposVacios, isContraseñaCorta } = this.state;
+
     return (
-      <LinearGradient
-        colors={['#00FF00', '#000000', '#FFA500', '#FF0000']}
+      <ImageBackground
+        source={require('./Images/crear.jpg')} // Ruta de tu imagen de fondo
         style={styles.container}
       >
         <View style={styles.overlay}>
           <Text style={styles.title}>Crear Cuenta</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nombre"
-            onChangeText={(nombre) => this.setState({ nombre })}
-            value={this.state.nombre}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Edad"
-            onChangeText={(edad) => this.setState({ edad })}
-            value={this.state.edad}
-            keyboardType="numeric"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Contraseña"
-            onChangeText={(paswoord) => this.setState({ paswoord })}
-            value={this.state.paswoord}
-            secureTextEntry={true}
-          />
           <TextInput
             style={styles.input}
             placeholder="Correo electrónico"
@@ -46,11 +41,22 @@ export default class CrearCuenta extends Component {
             value={this.state.correo}
             keyboardType="email-address"
           />
-          <TouchableOpacity style={styles.button} onPress={this.addUsuario}>
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña"
+            onChangeText={(contraseña) => this.setState({ contraseña })}
+            value={this.state.contraseña}
+            secureTextEntry={true}
+          />
+          <TouchableOpacity
+            style={[styles.button, (isCamposVacios || isContraseñaCorta) && styles.buttonDisabled]}
+            onPress={this.onPressRegistrar}
+            disabled={isCamposVacios || isContraseñaCorta}
+          >
             <Text style={styles.buttonText}>Registrarse</Text>
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </ImageBackground>
     );
   }
 }
@@ -60,12 +66,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
   overlay: {
-    width: '80%',
+    width: '85%',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)'
   },
   title: {
     fontSize: 24,
@@ -93,5 +102,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000',
     fontWeight: 'bold',
+  },
+  buttonDisabled: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)', // Cambia el color del botón cuando está deshabilitado
   },
 });
