@@ -54,7 +54,7 @@ export default function UserProfile({ route }) {
 
       console.log('Datos del usuario guardados correctamente.');
 
-      navigation.navigate('Inicio', { email: email });
+      navigation.navigate('Menu', { email: email });
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
       alert('Error al guardar los datos del usuario. Por favor, inténtalo de nuevo más tarde.');
@@ -63,6 +63,7 @@ export default function UserProfile({ route }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Image source={require('./Images/crear.jpg')} style={styles.backgroundImage} />
       <View style={styles.overlay}>
         <View style={styles.avatarContainer}>
           <Image source={avatar} style={styles.avatar} />
@@ -148,7 +149,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#cd966c',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover', // or 'stretch'
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
   overlay: {
     height: '75%',
