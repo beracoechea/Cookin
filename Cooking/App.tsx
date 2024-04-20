@@ -10,7 +10,7 @@ import SeleccionInicio from './SeleccionInicio';
 import CrearCuenta from './CrearCuenta';
 import CreacionPerfil from './CreacionPerfil';
 import IniciarSesion from './IniciarSesion';
-
+import Menu from './Menu';
 
 
 const Stack = createStackNavigator();
@@ -27,6 +27,7 @@ function App(): JSX.Element {
         <Stack.Screen name="CrearCuenta" component={CrearCuenta} options={{ headerShown: false }}/>
         <Stack.Screen name="IniciarSesion" component={IniciarSesion} options={{ headerShown: true }}/>
         <Stack.Screen name="CreacionPerfil" component={CreacionPerfil} options={{headerShown:false}}/>
+        <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false }}/>
 
 
 
