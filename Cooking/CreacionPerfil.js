@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Modal, TouchableOpacity, TextInput, StyleSheet, Image, ScrollView } from 'react-native';
+import { Text, View, TextInput, StyleSheet, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import appFirebase from './credenciales';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
 
-const avatarMap = {
-  'Seleccion.jpg': require('./Images/Seleccion.jpg'),
-  'crear.jpg': require('./Images/crear.jpg'),
-  'fondo.jpg': require('./Images/fondo.jpg'),
-};
+import { useNavigation } from '@react-navigation/native';
 
 // Inicializa Firestore
 const firestore = getFirestore(appFirebase);
@@ -18,28 +12,23 @@ const firestore = getFirestore(appFirebase);
 export default function UserProfile({ route }) {
   const navigation = useNavigation();
   const { email } = route.params;
-  const [modalVisible, setModalVisible] = useState(false);
-  const [avatar, setAvatar] = useState(avatarMap['Seleccion.jpg']);
   const [nombre, setNombre] = useState('');
   const [edad, setEdad] = useState('');
   const [sexo, setSexo] = useState('');
-  const [alergias, setAlergias] = useState('');
-  const [verificado, setVerificado] = useState(false);
-  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
+  const [estatura, setEstatura] = useState('');
+  const [peso, setPeso] = useState('');
+  const [estaturaUnit, setEstaturaUnit] = useState('cm');
+  const [pesoUnit, setPesoUnit] = useState('kg');
+  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true); 
 
   useEffect(() => {
     // Lógica para habilitar o deshabilitar el botón de guardar
-    if (nombre && edad && sexo && alergias) {
+    if (nombre && edad && sexo && estatura && peso) {
       setSaveButtonDisabled(false);
     } else {
       setSaveButtonDisabled(true);
     }
-  }, [nombre, edad, sexo, alergias]);
-
-  const handleAvatarPress = (avatarName) => {
-    setAvatar(avatarMap[avatarName]);
-    setModalVisible(false);
-  };
+  }, [nombre, edad, sexo, estatura, peso]);
 
   const handleSaveButtonPress = async () => {
     try {
@@ -47,14 +36,15 @@ export default function UserProfile({ route }) {
         nombre,
         edad,
         sexo,
-        alergias,
-        verificado,
-        avatar,
+        estatura,
+        estaturaUnit,
+        peso,
+        pesoUnit,
       });
 
       console.log('Datos del usuario guardados correctamente.');
 
-      navigation.navigate('Menu', { email: email });
+      navigation.navigate('Alergias', { email: email });
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
       alert('Error al guardar los datos del usuario. Por favor, inténtalo de nuevo más tarde.');
@@ -62,85 +52,96 @@ export default function UserProfile({ route }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Image source={require('./Images/crear.jpg')} style={styles.backgroundImage} />
-      <View style={styles.overlay}>
-        <View style={styles.avatarContainer}>
-          <Image source={avatar} style={styles.avatar} />
-          <TouchableOpacity
-            style={styles.changeAvatarButton}
-            onPress={() => {
-              setModalVisible(true);
-            }}
-          >
-            <FontAwesome5 name="user-edit" color="#000" size={20} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.infoContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Nombre"
-            value={nombre}
-            onChangeText={setNombre}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Edad"
-            value={edad}
-            keyboardType="numeric"
-            onChangeText={setEdad}
-          />
-         
-          <TextInput
-            style={styles.input}
-            placeholder="Alergias"
-            value={alergias}
-            onChangeText={setAlergias}
-          />
-          <View style={styles.verificadoContainer}>
-            <Text>Usuario Verificado:</Text>
-            <TouchableOpacity onPress={() => setVerificado(!verificado)}>
-              <MaterialCommunityIcons name={verificado ? "checkbox-marked" : "checkbox-blank-outline"} size={25} />
+    <ImageBackground source={require('./Images/crear.jpg')} style={styles.backgroundImage}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.overlay}>
+          <View style={styles.infoContainer}>
+            <View style={styles.inputRow}>
+              <MaterialCommunityIcons name="account" size={24} color="#fff" style={styles.icon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Nombre"
+                value={nombre}
+                onChangeText={setNombre}
+              />
+            </View>
+            <View style={styles.inputRow}>
+              <MaterialCommunityIcons name="calendar" size={24} color="#fff" style={styles.icon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Edad"
+                value={edad}
+                keyboardType="numeric"
+                onChangeText={setEdad}
+              />
+            </View>
+            <View style={styles.inputRow}>
+              <MaterialCommunityIcons name="human" size={24} color="#fff" style={styles.icon} />
+              <TextInput
+                style={styles.input}
+                placeholder={estaturaUnit === 'cm' ? 'cm' : 'ft/in'}
+                value={estatura}
+                keyboardType="numeric"
+                onChangeText={setEstatura}
+              />
+              <View style={styles.unitContainer}>
+                <TouchableOpacity
+                  style={[styles.unitButton, estaturaUnit === 'cm' && styles.unitButtonSelected]}
+                  onPress={() => setEstaturaUnit('cm')}
+                >
+                  <Text style={styles.unitButtonText}>cm</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.unitButton, estaturaUnit === 'ft/in' && styles.unitButtonSelected]}
+                  onPress={() => setEstaturaUnit('ft/in')}
+                >
+                  <Text style={styles.unitButtonText}>ft/in</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.inputRow}>
+              <MaterialCommunityIcons name="weight" size={24} color="#fff" style={styles.icon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Peso"
+                value={peso}
+                keyboardType="numeric"
+                onChangeText={setPeso}
+              />
+              <View style={styles.unitContainer}>
+                <TouchableOpacity
+                  style={[styles.unitButton, pesoUnit === 'kg' && styles.unitButtonSelected]}
+                  onPress={() => setPesoUnit('kg')}
+                >
+                  <Text style={styles.unitButtonText}>kg</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.unitButton, pesoUnit === 'lbs' && styles.unitButtonSelected]}
+                  onPress={() => setPesoUnit('lbs')}
+                >
+                  <Text style={styles.unitButtonText}>lbs</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.genderIconsContainer}>
+              <TouchableOpacity onPress={() => setSexo('Hombre')}>
+                <MaterialCommunityIcons name="gender-male" size={40} color={sexo === 'Hombre' ? '#007BFF' : '#808080'} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setSexo('Mujer')}>
+                <MaterialCommunityIcons name="gender-female" size={40} color={sexo === 'Mujer' ? '#FF69B4' : '#808080'} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={[styles.saveButton, saveButtonDisabled && styles.saveButtonDisabled]}
+              onPress={handleSaveButtonPress}
+              disabled={saveButtonDisabled}
+            >
+              <Text style={styles.saveButtonText}>Guardar</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.sexContainer}>
-            <TouchableOpacity onPress={() => setSexo('Hombre')}>
-              <MaterialCommunityIcons name="gender-male" size={40} color={sexo === 'Hombre' ? '#007BFF' : '#000'} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setSexo('Mujer')}>
-              <MaterialCommunityIcons name="gender-female" size={40} color={sexo === 'Mujer' ? '#FF69B4' : '#000'} />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            style={[styles.saveButton, saveButtonDisabled && styles.saveButtonDisabled]}
-            onPress={handleSaveButtonPress}
-            disabled={saveButtonDisabled}
-          >
-            <Text style={styles.saveButtonText}>Guardar</Text>
-          </TouchableOpacity>
         </View>
-      </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalBackground}>
-          <ScrollView contentContainerStyle={styles.modalContainer} horizontal>
-            <TouchableOpacity onPress={() => handleAvatarPress('fondo.jpg')}>
-              <Image source={avatarMap['fondo.jpg']} style={styles.avatarOption} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleAvatarPress('crear.jpg')}>
-              <Image source={avatarMap['crear.jpg']} style={styles.avatarOption} />
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </Modal>
-    </ScrollView>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
@@ -152,73 +153,43 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', // or 'stretch'
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    resizeMode: 'cover',
+    justifyContent: 'center',
   },
   overlay: {
-    height: '75%',
-    width: '85%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 20,
+    padding: 70,
     borderRadius: 10,
     position: 'relative',
   },
-  avatarContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 125,
-    borderRadius: 70,
-  },
   infoContainer: {
     width: '100%',
+    alignItems: 'center', // Alinea los elementos en el centro horizontalmente
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    minHeight: 40,
+    borderColor: '#000',
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
     color: '#fff',
-  },
-  changeAvatarButton: {
-    position: 'absolute',
-    bottom: 3,
-    right: 10,
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 15,
-  },
-  icon: {
-    paddingHorizontal: 5,
-  },
-  modalBackground: {
     flex: 1,
+    fontSize: 16, // Tamaño mínimo de fuente
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    alignItems: 'center',
-  },
-  avatarOption: {
-    margin: 10,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    marginBottom: 10,
   },
   saveButton: {
     backgroundColor: '#007BFF',
     paddingVertical: 7,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20, // Ajusta el padding para dar más espacio al texto
     borderRadius: 50,
-    marginTop: 3,
+    marginTop: 20,
     alignItems: 'center',
+    alignSelf: 'center',
   },
   saveButtonText: {
     color: '#fff',
@@ -228,16 +199,30 @@ const styles = StyleSheet.create({
   saveButtonDisabled: {
     backgroundColor: '#ccc',
   },
-  verificadoContainer: {
+  unitContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
+    justifyContent: 'center', // Alinea los botones de unidad horizontalmente
   },
-  sexContainer: {
+  unitButton: {
+    backgroundColor: '#ccc',
+    borderRadius: 5,
+    padding: 5,
+    marginHorizontal: 5,
+  },
+  unitButtonSelected: {
+    backgroundColor: '#00FFB0',
+  },
+  unitButtonText: {
+    color: '#fff',
+  },
+  genderIconsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 20,
-    marginTop:20,
+    marginTop: 20,
+    width: '100%', // Asegura que los iconos de género ocupen todo el ancho del contenedor
+  },
+  icon: {
+    marginRight: 10,
   },
 });
