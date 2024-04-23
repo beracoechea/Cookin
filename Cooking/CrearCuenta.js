@@ -62,12 +62,10 @@ export default function Signup() {
         <Text style={styles.passwordRequirement}>Por motivos de seguridad, la contraseña debe contener al menos 6 caracteres.</Text>
         <View style={styles.userIconContainer}>
           <View style={styles.circle}>
-            {/* Cambia el icono aquí */}
             <MaterialCommunityIcons name="chef-hat" color="#fff" size={50} style={styles.icon} />
           </View>
         </View>
         <View style={styles.inputContainer}>
-          {/* Cambia el icono aquí */}
           <FontAwesome name="user" size={20} color="#fff" style={styles.icon} />
           <TextInput
             style={styles.input}

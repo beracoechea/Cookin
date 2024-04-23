@@ -29,7 +29,7 @@ function App(): JSX.Element {
         <Stack.Screen name="Inicio" component={Inicio} options={{ headerShown: false }}/>
 
         <Stack.Screen name="CrearCuenta" component={CrearCuenta} options={{ headerShown: false }}/>
-        <Stack.Screen name="IniciarSesion" component={IniciarSesion} options={{ headerShown: true }}/>
+        <Stack.Screen name="IniciarSesion" component={IniciarSesion} options={{ headerShown: false }}/>
         <Stack.Screen name="CreacionPerfil" component={CreacionPerfil} options={{headerShown:false}}/>
         <Stack.Screen name="Alergias" component={Alergias} options={{ headerShown: false }}/>
 
