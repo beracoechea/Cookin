@@ -3,8 +3,8 @@ import { Text, TouchableOpacity, View, TextInput, StyleSheet, Alert, ImageBackgr
 import appFirebase from './credenciales';
 import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Puedes reemplazar los iconos aquí con los adecuados
-import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Puedes reemplazar los iconos aquí con los adecuados
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const firebaseAuth = getAuth(appFirebase, {
