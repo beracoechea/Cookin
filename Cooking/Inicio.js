@@ -202,7 +202,7 @@ export default class Inicio extends Component {
     const { desayuno, almuerzo, cena, colacion, postre } = this.state.usuario;
     const { necesidadesNutricionales } = this.state;
 
-    const { usuario, modalVisible, editedParam, editedValue,instagramLink, modalVisibleInsta } = this.state;
+    const { usuario, modalVisible, editedParam, editedValue, instagramLink, modalVisibleInsta } = this.state;
 
     return (
       <View style={styles.container}>

@@ -37,7 +37,7 @@ export default class Menu extends Component {
               iconName = focused ? 'notebook-check' : 'notebook-check';
             }
 
-            return <MaterialCommunityIcons name={iconName} color={color} size={size} />;
+          return <MaterialCommunityIcons name={iconName} color={color} size={size} />;
           },
           tabBarActiveTintColor: '#456B6B', 
           tabBarInactiveTintColor: '#999999', 
@@ -56,8 +56,7 @@ export default class Menu extends Component {
           options={{
             tabBarLabel: 'Inicio',
             headerShown: false,
-          }}
-        >
+          }}>
           {(props) => <Inicio {...props} email={email} />}
         </Tab.Screen>
 

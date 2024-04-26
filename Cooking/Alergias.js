@@ -41,7 +41,6 @@ const alimentosPorCategoria = {
         { nombre: 'Calabacín', icono: 'baguette', color: '#228B22', colorSeleccionado: '#00cc00' },
         { nombre: 'Pepino', icono: 'chili-mild-outline', color: '#228B22', colorSeleccionado: '#00cc00' },
         { nombre: 'Tomate', icono: 'bomb', color: '#FF4500', colorSeleccionado: '#ff3300' },
-
         { nombre: 'Zanahoria', icono: 'carrot', color: '#FFD700', colorSeleccionado: '#ffcc00' },
         { nombre: 'Brócoli', icono: 'tree', color: '#008000', colorSeleccionado: '#00b300' },
         { nombre: 'Espinacas', icono: 'leaf', color: '#228B22', colorSeleccionado: '#00cc00' },
@@ -61,7 +60,6 @@ const alimentosPorCategoria = {
         { nombre: 'Maíz', icono: 'corn', color: '#FFD700', colorSeleccionado: '#ffcc00' },
         { nombre: 'Quinoa', icono: 'grain', color: '#8B4513', colorSeleccionado: '#994c00' },
         { nombre: 'Cebada', icono: 'barley', color: '#F5DEB3', colorSeleccionado: '#ffcc99' },
-
         { nombre: 'Avena', icono: 'bowl-mix-outline', color: '#F5DEB3', colorSeleccionado: '#ffcc99' },
         { nombre: 'Trigo', icono: 'spa', color: '#D2B48C', colorSeleccionado: '#cc9966' },
        
@@ -114,7 +112,7 @@ const alimentosPorCategoria = {
     
       const renderAlimentosPorCategoria = () => {
         return Object.keys(alimentosPorCategoria).map(categoria => (
-          <View key={categoria} style={styles.categoriaContainer}>
+					<View key={categoria} style={styles.categoriaContainer}>
             <Text style={styles.categoriaTitle}>{categoria.toUpperCase()}</Text>
             <View style={styles.alimentosContainer}>
               {alimentosPorCategoria[categoria].map(alimento => (
@@ -124,18 +122,28 @@ const alimentosPorCategoria = {
                     styles.alimentoContainer,
                     {
                       backgroundColor: seleccionados[categoria] &&
-                        seleccionados[categoria].includes(alimento.nombre) ? alimento.colorSeleccionado : '#f0f0f0',
+														seleccionados[categoria].includes(alimento.nombre)
+														? alimento.colorSeleccionado
+														: '#f0f0f0',
                     },
                   ]}
                   onPress={() => handleSeleccionAlimento(categoria, alimento.nombre)}
                 >
-                  <MaterialCommunityIcons name={alimento.icono} size={24} color="#000" />
+									<MaterialCommunityIcons name={alimento.icono} size={24}
+										style={[
+                      styles.alimentoIcono,
+                      {
+                        color: seleccionados[categoria] &&
+                          seleccionados[categoria].includes(alimento.nombre) ? '#fff' : '#000',
+                      },
+										]}
+									/>
                   <Text
-                    style={[
+											style={[
                       styles.alimentoText,
                       {
                         color: seleccionados[categoria] &&
-                          seleccionados[categoria].includes(alimento.nombre) ? '#fff' : '#808080',
+                          seleccionados[categoria].includes(alimento.nombre) ? '#fff' : '#474747',
                       },
                     ]}
                   >
@@ -152,7 +160,10 @@ const alimentosPorCategoria = {
     
       return (
         <View style={styles.container}>
-          <ScrollView style={styles.scrollView}>{renderAlimentosPorCategoria()}</ScrollView>
+          <ScrollView style={styles.scrollView}>
+						<Text style={styles.mainTitle}>SELECCIONA TUS INGREDIENTES:</Text>
+						{renderAlimentosPorCategoria()}
+					</ScrollView>
           <TouchableOpacity
             style={[styles.guardarButton, { backgroundColor: guardarDisabled ? '#ccc' : '#007BFF' }]}
             onPress={handleGuardarSeleccion}
@@ -175,14 +186,22 @@ const alimentosPorCategoria = {
       scrollView: {
         flex: 1,
       },
+			mainTitle: {
+				fontSize: 22,
+				fontWeight: 'bold',
+				color: '#3C99FE',
+				marginBottom: 20,
+				textAlign: 'center',
+			},
       categoriaContainer: {
         marginBottom: 20,
       },
       categoriaTitle: {
-        fontSize: 20,
+				fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
-        color: '#8B4513', // Título en color café
+				// color: '#8B4513', // Título en color café
+					color: '#3C99FE',
       },
       alimentosContainer: {
         flexDirection: 'row',
@@ -194,7 +213,7 @@ const alimentosPorCategoria = {
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 20,
-        borderWidth: 1,
+        borderWidth: 0,
         borderColor: '#ccc',
         marginBottom: 10,
         marginRight: 10,
@@ -204,6 +223,9 @@ const alimentosPorCategoria = {
         fontSize: 16,
         marginLeft: 10,
       },
+			alimentoIcono: {
+				
+			},
       guardarButton: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -218,6 +240,7 @@ const alimentosPorCategoria = {
         fontWeight: 'bold',
         marginLeft: 10,
       },
+			
     });
 
     export default Alergias;

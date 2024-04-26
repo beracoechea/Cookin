@@ -16,7 +16,7 @@ export default class SeleccionInicio extends Component {
   render() {
     return (
       <ImageBackground source={require('./Images/Seleccion.jpg')} style={styles.backgroundImage}>
-        <View style={styles.overlay}>
+				<View style={styles.overlay}>
           <Text style={styles.title}>¡Bienvenido a Cooking!</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.buttonGoogle} onPress={this.handleInternalIniciar}>

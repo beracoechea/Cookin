@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TouchableOpacity, View, TextInput, StyleSheet, Alert, ImageBackground } from 'react-native'; // Importa ImageBackground
+
+// Importa ImageBackground
+import { Text, TouchableOpacity, View, TextInput, StyleSheet, Alert, ImageBackground } from 'react-native'; 
 import appFirebase from './credenciales';
 import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
@@ -51,7 +53,7 @@ export default function Signup() {
       await createUserWithEmailAndPassword(firebaseAuth, email, password);
       navigation.navigate('CreacionPerfil', { email: email });
     } catch (error) {
-      Alert.alert('Error al registrar el usuario: ');
+				Alert.alert('Error al registrar el ' + email + ': ' + error.message);
     }
   };
 
@@ -62,7 +64,7 @@ export default function Signup() {
         <Text style={styles.passwordRequirement}>Por motivos de seguridad, la contraseña debe contener al menos 6 caracteres.</Text>
         <View style={styles.userIconContainer}>
           <View style={styles.circle}>
-            <MaterialCommunityIcons name="chef-hat" color="#fff" size={50} style={styles.icon} />
+            <MaterialCommunityIcons name="chef-hat" color="#fff" size={50} style={styles.iconHat} />
           </View>
         </View>
         <View style={styles.inputContainer}>
@@ -71,7 +73,8 @@ export default function Signup() {
             style={styles.input}
             value={email}
             onChangeText={handleEmailChange}
-            placeholder="Correo electrónico"
+						placeholder="Correo electrónico"
+						placeholderTextColor="#CDCDCD"
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -83,14 +86,17 @@ export default function Signup() {
             style={styles.input}
             value={password}
             onChangeText={handlePasswordChange}
-            placeholder="Contraseña"
+						placeholder="Contraseña"
+						placeholderTextColor="#CDCDCD"
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={handleTogglePasswordVisibility} style={styles.passwordVisibilityButton}>
-            <MaterialIcons name={showPassword ? "visibility-off" : "visibility"} size={20} color="#fff" style={styles.icon} />
+							<MaterialIcons name={showPassword ? "visibility-off" : "visibility"} size={20} color="#fff"
+														 style={styles.iconPasswordVisibility} />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={[styles.button, isButtonDisabled && styles.disabledButton]} onPress={handleSignup} disabled={isButtonDisabled}>
+					<TouchableOpacity style={[styles.button, isButtonDisabled && styles.disabledButton]}
+														onPress={handleSignup} disabled={isButtonDisabled}>
           <Text style={styles.buttonText}>Registrarse</Text>
         </TouchableOpacity>
       </View>
@@ -105,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   overlay: {
-    height: '80%',
+		height: '80%',
     width: '95%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,
@@ -134,16 +140,22 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+			alignItems: 'center',
     marginBottom: 20,
   },
-  icon: {
-    marginRight: 10,
+	icon: {
+		marginRight: 20,
+	},
+  iconHat: {
+			justifyContent: 'center',
   },
+	iconPasswordVisibility: {
+		marginRight: 5,
+	},
   input: {
     flex: 1,
     height: 50,
-    borderWidth: 1,
+		borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 25,
     paddingHorizontal: 20,
@@ -172,6 +184,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 10,
   },
+	
   disabledButton: {
     backgroundColor: '#ccc',
   },

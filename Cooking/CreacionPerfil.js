@@ -60,16 +60,18 @@ export default function UserProfile({ route }) {
               <MaterialCommunityIcons name="account" size={24} color="#fff" style={styles.icon} />
               <TextInput
                 style={styles.input}
-                placeholder="Nombre"
+								placeholder="Nombre"
+								placeholderTextColor="#CDCDCD"
                 value={nombre}
-                onChangeText={setNombre}
+								onChangeText={setNombre}
               />
             </View>
             <View style={styles.inputRow}>
               <MaterialCommunityIcons name="calendar" size={24} color="#fff" style={styles.icon} />
               <TextInput
                 style={styles.input}
-                placeholder="Edad"
+								placeholder="Edad"
+								placeholderTextColor="#CDCDCD"
                 value={edad}
                 keyboardType="numeric"
                 onChangeText={setEdad}
@@ -79,7 +81,8 @@ export default function UserProfile({ route }) {
               <MaterialCommunityIcons name="human" size={24} color="#fff" style={styles.icon} />
               <TextInput
                 style={styles.input}
-                placeholder={estaturaUnit === 'cm' ? 'cm' : 'ft/in'}
+								placeholder={"Estatura en " + estaturaUnit}
+								placeholderTextColor="#CDCDCD"
                 value={estatura}
                 keyboardType="numeric"
                 onChangeText={setEstatura}
@@ -103,7 +106,8 @@ export default function UserProfile({ route }) {
               <MaterialCommunityIcons name="weight" size={24} color="#fff" style={styles.icon} />
               <TextInput
                 style={styles.input}
-                placeholder="Peso"
+								placeholder={"Peso en " + pesoUnit}
+								placeholderTextColor="#CDCDCD"
                 value={peso}
                 keyboardType="numeric"
                 onChangeText={setPeso}
@@ -125,10 +129,10 @@ export default function UserProfile({ route }) {
             </View>
             <View style={styles.genderIconsContainer}>
               <TouchableOpacity onPress={() => setSexo('Hombre')}>
-                <MaterialCommunityIcons name="gender-male" size={40} color={sexo === 'Hombre' ? '#007BFF' : '#808080'} />
+                <MaterialCommunityIcons name="gender-male" size={40} color={sexo === 'Hombre' ? '#56CCF5' : '#CDCDCD'} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setSexo('Mujer')}>
-                <MaterialCommunityIcons name="gender-female" size={40} color={sexo === 'Mujer' ? '#FF69B4' : '#808080'} />
+                <MaterialCommunityIcons name="gender-female" size={40} color={sexo === 'Mujer' ? '#FF69B4' : '#CDCDCD'} />
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -156,9 +160,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     justifyContent: 'center',
   },
-  overlay: {
+	overlay: {
+		height: '83%',
+    width: '95%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 70,
+		padding: 20,
     borderRadius: 10,
     position: 'relative',
   },
@@ -167,8 +173,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Alinea los elementos en el centro horizontalmente
   },
   input: {
-    minHeight: 40,
-    borderColor: '#000',
+		minHeight: 40,
+		borderWidth: 1,
+    borderColor: '#ccc',
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
@@ -211,7 +218,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   unitButtonSelected: {
-    backgroundColor: '#00FFB0',
+    backgroundColor: '#04D695',
   },
   unitButtonText: {
     color: '#fff',
@@ -219,7 +226,7 @@ const styles = StyleSheet.create({
   genderIconsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
+    marginTop: 5,
     width: '100%', // Asegura que los iconos de género ocupen todo el ancho del contenedor
   },
   icon: {

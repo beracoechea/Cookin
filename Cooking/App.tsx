@@ -22,23 +22,16 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Carga">
-      <Stack.Screen name="Carga" component={Carga} options={{ headerShown: false }}/>
-      <Stack.Screen name="SeleccionInicio" component={SeleccionInicio} options={{ headerShown:false }}/>
-
-        
+        <Stack.Screen name="Carga" component={Carga} options={{ headerShown: false }}/>
+        <Stack.Screen name="SeleccionInicio" component={SeleccionInicio} options={{ headerShown:false }}/>        
         <Stack.Screen name="Inicio" component={Inicio} options={{ headerShown: false }}/>
-
+        
         <Stack.Screen name="CrearCuenta" component={CrearCuenta} options={{ headerShown: false }}/>
         <Stack.Screen name="IniciarSesion" component={IniciarSesion} options={{ headerShown: false }}/>
+        
         <Stack.Screen name="CreacionPerfil" component={CreacionPerfil} options={{headerShown:false}}/>
         <Stack.Screen name="Alergias" component={Alergias} options={{ headerShown: false }}/>
-
-
-
-
         <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false }}/>
-
-
 
 
       </Stack.Navigator>
