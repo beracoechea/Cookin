@@ -3,6 +3,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Inicio from './Inicio';
+import MisRecetas from './MisRecetas';
+import ListaCompras from './ListaCompras';
+import ListaRecetas from './ListaRecetas';
 
 
 const Tab = createBottomTabNavigator();
@@ -27,13 +30,11 @@ export default class Menu extends Component {
 
             if (route.name === 'Inicio') {
               iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === 'Chatbot') {
-              iconName = focused ? 'robot' : 'robot-outline';
-            } else if (route.name === 'CaminoAdiestramiento') {
-              iconName = focused ? 'tennis-ball' : 'tennis-ball';
-            } else if (route.name === 'Mapa') {
-              iconName = focused ? 'google-maps' : 'google-maps';
-            } else if (route.name === 'Cartilla') {
+            } else if (route.name === 'ListaRecetas') {
+              iconName = focused ? 'book-open-page-variant' : 'book-open-page-variant-outline';
+            } else if (route.name === 'ListaCompras') {
+              iconName = focused ? 'cart-variant' : 'cart-arrow-right';
+            } else if (route.name === 'MisRecetas') {
               iconName = focused ? 'notebook-check' : 'notebook-check';
             }
 
@@ -59,8 +60,35 @@ export default class Menu extends Component {
           }}>
           {(props) => <Inicio {...props} email={email} />}
         </Tab.Screen>
+        <Tab.Screen
+              name="MisRecetas"
+              initialParams={{ email}}
+              options={{
+                tabBarLabel: 'MisRecetas',
+                headerShown: false,
+              }}
+            >
+               {(props) => <MisRecetas {...props} email={email} />}
+            </Tab.Screen>
+            <Tab.Screen
+              name="ListaCompras"
+              initialParams={{ email}}
+              options={{
+                tabBarLabel: 'Super',
+                headerShown: false,
+              }}
+            >
+               {(props) => <ListaCompras {...props} email={email} />}
+            </Tab.Screen>
 
-       
+            <Tab.Screen
+          name="ListaRecetas"
+          component={ListaRecetas}
+          options={{
+            tabBarLabel: 'Recetario',
+            headerShown: false,
+          }}
+        />
       </Tab.Navigator>
     );
   }

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Modal, StyleSheet, ScrollView, TextInput } from 'react-native';
-import { getFirestore, doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, updateDoc} from 'firebase/firestore';
 import appFirebase from './credenciales';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 
 // Inicializa Firestore
@@ -32,8 +31,7 @@ export default class Inicio extends Component {
       grasas: 0,
       caloriasTotales: 0,
     },
-    modalVisibleInsta: false,
-    instagramLink: '',
+    
   };
 
   componentDidMount() {
@@ -184,20 +182,9 @@ export default class Inicio extends Component {
     }
   };
 
-  handleInstagramLinkChange = (value) => {
-    this.setState({ instagramLink: value });
-  };
+ 
 
-  saveInstagramLink = async () => {
-    const { email } = this.props.route.params;
-    const { instagramLink } = this.state;
-    try {
-      await updateDoc(doc(firestore, 'Usuarios', email), { instagramLink });
-      this.setState({ modalVisibleInsta: false });
-    } catch (error) {
-      console.error('Error al guardar el enlace de Instagram:', error);
-    }
-  };
+  
   render() {
     const { desayuno, almuerzo, cena, colacion, postre } = this.state.usuario;
     const { necesidadesNutricionales } = this.state;
@@ -215,10 +202,6 @@ export default class Inicio extends Component {
     <View style={styles.infoRow}>
       <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('nombre')}>
         <Text style={styles.infoTextName}>{usuario.nombre}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.setState({ modalVisibleInsta: true })}>
-        <FontAwesome name="instagram" size={30} color="#fff" style={styles.genderIcon} />
       </TouchableOpacity>
       
     </View>
@@ -358,32 +341,7 @@ export default class Inicio extends Component {
             </View>
           </Modal>
 
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisibleInsta}
-            onRequestClose={() => this.setState({ modalVisibleInsta: false })}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Inserta el enlace de tu perfil de Instagram</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enlace de Instagram"
-                  onChangeText={this.handleInstagramLinkChange}
-                  value={instagramLink}
-                />
-                <View style={styles.buttonContainer}>
-                  <TouchableOpacity onPress={() => this.setState({ modalVisibleInsta: false })}>
-                    <MaterialCommunityIcons name="archive-cancel" size={40} color="#FF0000" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={this.saveInstagramLink}>
-                    <FontAwesome5 name="save" size={40} color="#4CAF50" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </Modal>
+          
 
         </ScrollView>
       </View>
