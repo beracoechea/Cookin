@@ -78,6 +78,20 @@ export default class Menu extends Component {
                 headerShown: false,
               }}
             >
+
+
+
+
+
+
+
+
+
+
+
+
+
+              
                {(props) => <ListaCompras {...props} email={email} />}
             </Tab.Screen>
 
