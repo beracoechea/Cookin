@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 import { getFirestore, doc, getDoc, updateDoc} from 'firebase/firestore';
 import appFirebase from './credenciales';
 import React, { Component } from 'react';
-import Receta from './Receta';
+import CardFavReceta from './CardFavReceta.js';
 
 // Inicializa Firestore
 const firestore = getFirestore(appFirebase);
@@ -53,7 +53,7 @@ export default class MisRecetas extends Component {
       <View>
 				{
 					/* Map each recipe from the user */
-					this.state.fav_recipes.map((recipe, key) => <Receta
+					this.state.fav_recipes.map((recipe, key) => <CardFavReceta
 																												id={recipe}
 																												key={key}
 																											/>)
