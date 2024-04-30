@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     buttonGoogle: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: 'green', 
+      backgroundColor: '#008080', 
       paddingHorizontal: 15,
       paddingVertical: 10,
       marginBottom: 30,

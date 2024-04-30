@@ -57,6 +57,10 @@ export default function Signup() {
     }
   };
 
+	function handleBack(event) {
+		navigation.navigate('SeleccionInicio');
+	}
+
   return (
     <ImageBackground source={require('./Images/crear.jpg')} style={styles.container}>
       <View style={styles.overlay}>
@@ -95,9 +99,13 @@ export default function Signup() {
 														 style={styles.iconPasswordVisibility} />
           </TouchableOpacity>
         </View>
-					<TouchableOpacity style={[styles.button, isButtonDisabled && styles.disabledButton]}
-														onPress={handleSignup} disabled={isButtonDisabled}>
+				<TouchableOpacity style={[styles.button, isButtonDisabled && styles.disabledButton]}
+													onPress={handleSignup} disabled={isButtonDisabled}>
           <Text style={styles.buttonText}>Registrarse</Text>
+				</TouchableOpacity>
+				
+				<TouchableOpacity style={styles.buttonBack} onPress={handleBack}>
+          <Text style={styles.buttonText}>Atrás</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -178,6 +186,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
+  },
+	
+	buttonBack: {
+		marginTop: 20,
+    width: '100%',
+    height: 50,
+    backgroundColor: '#333',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25,
   },
 
   passwordRequirement: {
