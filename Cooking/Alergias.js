@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, collection, getDocs } from 'firebase/firestore';
 import appFirebase from './credenciales';
 
 // Inicializa Firestore
@@ -97,18 +97,37 @@ const alimentosPorCategoria = {
         setGuardarDisabled(false);
       };
     
+     
       const handleGuardarSeleccion = async () => {
         try {
-          await setDoc(doc(firestore, 'SeleccionAlimentos', email), {
-            seleccionados,
-          });
-          console.log('Selección de alimentos guardada correctamente.');
-          // Navegar al menú y pasar el valor de email como parámetro
-          navigation.navigate('Menu', { email });
+            const userRef = doc(firestore, 'Usuarios', email); // Referencia al documento del usuario
+            const alergiasCollectionRef = collection(userRef, 'Ingredientes'); // Referencia a la colección de ingredientes dentro del usuario
+            
+            const alergiasSnapshot = await getDocs(alergiasCollectionRef);
+            if (!alergiasSnapshot.empty) {
+                const alergiasDocRef = alergiasSnapshot.docs[0].ref; // Referencia al primer documento encontrado en Ingredientes
+    
+                // Filtrar las selecciones marcadas
+                const nuevasSeleccionadas = Object.keys(seleccionados).reduce((acc, categoria) => {
+                    acc[categoria] = alimentosPorCategoria[categoria].filter(alimento =>
+                        seleccionados[categoria].includes(alimento.nombre)
+                    ).map(alimento => alimento.nombre);
+                    return acc;
+                }, {});
+    
+                // Guardar solo las selecciones marcadas
+                await setDoc(alergiasDocRef, { seleccionados: nuevasSeleccionadas });
+                console.log('Selección de alimentos actualizada correctamente.');
+            } else {
+                await setDoc(doc(alergiasCollectionRef), { seleccionados }); // Crear un nuevo documento
+                console.log('Nuevo documento de selección de alimentos creado.');
+            }
+            
+            navigation.navigate('Menu', { email }); // Navegar de regreso al menú
         } catch (error) {
-          console.error('Error al guardar la selección de alimentos:', error);
+            console.error('Error al guardar la selección de alimentos:', error);
         }
-      };
+    };
     
       const renderAlimentosPorCategoria = () => {
         return Object.keys(alimentosPorCategoria).map(categoria => (
