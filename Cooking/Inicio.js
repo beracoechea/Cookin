@@ -189,7 +189,7 @@ export default class Inicio extends Component {
     const { desayuno, almuerzo, cena, colacion, postre } = this.state.usuario;
     const { necesidadesNutricionales } = this.state;
 
-    const { usuario, modalVisible, editedParam, editedValue, instagramLink, modalVisibleInsta } = this.state;
+    const { usuario, modalVisible, editedParam, editedValue} = this.state;
 
     return (
       <View style={styles.container}>
@@ -199,10 +199,18 @@ export default class Inicio extends Component {
   style={styles.gradient} // Aplica el estilo del gradiente al contenedor de información del usuario
 >
   <View style={styles.infoContainer}>
+  <TouchableOpacity>
+        {usuario.sexo === 'Hombre' ? (
+          <MaterialCommunityIcons name="gender-male" size={30} color="blue" style={styles.genderIcon} />
+        ) : (
+          <MaterialCommunityIcons name="gender-female" size={30} color="red" style={styles.genderIcon} />
+        )}
+      </TouchableOpacity>
     <View style={styles.infoRow}>
       <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('nombre')}>
         <Text style={styles.infoTextName}>{usuario.nombre}</Text>
       </TouchableOpacity>
+      
       
     </View>
 
@@ -219,13 +227,7 @@ export default class Inicio extends Component {
         <Text style={styles.editableFieldText}>{usuario.estatura} {usuario.estaturaUnit}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.editableField, styles.infoField]}>
-        {usuario.sexo === 'Hombre' ? (
-          <MaterialCommunityIcons name="gender-male" size={30} color="blue" style={styles.genderIcon} />
-        ) : (
-          <MaterialCommunityIcons name="gender-female" size={30} color="red" style={styles.genderIcon} />
-        )}
-      </TouchableOpacity>
+     
     </View>
   </View>
 </LinearGradient>
@@ -379,6 +381,11 @@ const styles = StyleSheet.create({
     marginRight: 5,
     flex: 1,
     textAlign: 'center',
+  },
+  genderIcon: {
+    position: 'absolute', // Establecemos la posición del icono como absoluta
+    top: 0, // Alineamos el icono en la parte superior del contenedor
+    right: 0, // Alineamos el icono en la esquina superior derecha del contenedor
   },
   infoRow: {
     flexDirection: 'row',
