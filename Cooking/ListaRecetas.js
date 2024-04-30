@@ -41,7 +41,6 @@ export default class ListaRecetas extends Component {
   }
 
   renderReceta = (item) => {
-    console.log("Datos de la receta:", item);
     const imagenReceta = imagenesRecetas[item.Imagen];
   
     // Crear una matriz de íconos de estrella
@@ -73,7 +72,7 @@ export default class ListaRecetas extends Component {
   };
 
   verReceta = (receta) => {
-    this.props.navigation.navigate('Receta', { receta });
+    this.props.navigation.navigate('Receta', { receta, imagenesRecetas });
   };
 
   render() {
