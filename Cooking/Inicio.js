@@ -31,7 +31,6 @@ export default class Inicio extends Component {
       grasas: 0,
       caloriasTotales: 0,
     },
-    
   };
 
   componentDidMount() {

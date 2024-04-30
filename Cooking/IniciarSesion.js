@@ -48,13 +48,17 @@ export default function IniciarSesion() {
     }
   };
 
+	function handleBack(event) {
+		navigation.navigate('SeleccionInicio');
+	}
+
   return (
     <ImageBackground source={require('./Images/crear.jpg')} style={styles.container}>
       <View style={styles.overlay}>
         <Text style={styles.title}>Iniciar Sesión</Text>
         <View style={styles.userIconContainer}>
           <View style={styles.circle}>
-            <MaterialCommunityIcons name="chef-hat" color="#fff" size={50} style={styles.icon} />
+            <MaterialCommunityIcons name="chef-hat" color="#fff" size={50} style={styles.iconHat} />
           </View>
         </View>
         <View style={styles.inputContainer}>
@@ -64,6 +68,7 @@ export default function IniciarSesion() {
             value={email}
             onChangeText={handleEmailChange}
             placeholder="Correo electrónico"
+						placeholderTextColor="#CDCDCD"
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -75,14 +80,20 @@ export default function IniciarSesion() {
             value={password}
             onChangeText={handlePasswordChange}
             placeholder="Contraseña"
+						placeholderTextColor="#CDCDCD"
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={toggleShowPassword} style={styles.passwordVisibilityButton}> 
-            <MaterialIcons name={showPassword ? "visibility-off" : "visibility"} size={20} color="#fff" style={styles.icon} />
+            <MaterialIcons name={showPassword ? "visibility-off" : "visibility"} size={20} color="#fff"
+													 style={styles.iconPasswordVisibility} />
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Iniciar Sesión</Text>
+        </TouchableOpacity>
+				
+				<TouchableOpacity style={styles.buttonBack} onPress={handleBack}>
+          <Text style={styles.buttonText}>Atrás</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -132,6 +143,12 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 10,
   },
+	iconHat: {
+			justifyContent: 'center',
+  },
+	iconPasswordVisibility: {
+		marginRight: 5,
+	},
   input: {
     flex: 1,
     height: 50,
@@ -150,6 +167,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     backgroundColor: '#008080',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25,
+  },
+	buttonBack: {
+		marginTop: 20,
+    width: '100%',
+    height: 50,
+    backgroundColor: '#333',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
