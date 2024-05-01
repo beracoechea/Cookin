@@ -69,6 +69,7 @@ export default class ListaRecetas extends Component {
   };
 
   verReceta = (receta) => {
+		console.log(receta);
     this.props.navigation.navigate('Receta', { receta, imagenesRecetas });
   };
 

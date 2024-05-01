@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   overlay: {
-    height: '80%',
+    height: '90%',
     width: '95%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,

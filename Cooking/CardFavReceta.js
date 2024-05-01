@@ -1,13 +1,14 @@
-import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React, { Component } from 'react';
 
 
 import { getFirestore, doc, getDoc, updateDoc} from 'firebase/firestore';
 import appFirebase from './credenciales';
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 // Inicializa Firestore
 const firestore = getFirestore(appFirebase);
-
 
 import imagenesRecetas from './imagenesRecetas.js';
 
@@ -59,7 +60,8 @@ export default class CardFavReceta extends Component {
 	}
 
 	showRecipe(recipe_data, recipe_image) {
-		this.props.navigation.navigate('Receta', { recipe_data, imagenesRecetas});
+		console.log(recipe_data);
+		this.props.navigation.navigate('Receta', { recipe_data, imagenesRecetas });
 	}
 	
   render() {
@@ -67,20 +69,36 @@ export default class CardFavReceta extends Component {
 
 
 		if (this.state.state_data === -1)
-			return <View><Text style={styles.title}>Error...</Text></View>;
+			return <View style={styles.cardContainer}><Text style={styles.title}>Error con la receta...</Text></View>;
 
 		else if (this.state.state_data === 1)
-			return <View><Text style={styles.title}>Cargando...</Text></View>;
+			return <View style={styles.cardContainer}><Text style={styles.title}>Cargando receta...</Text></View>;
+
+		// Fetch the image
+		const imagenReceta = imagenesRecetas[this.state.recipe_data.Imagen];
+
+
+		// Crear una matriz de íconos de estrella
+    const estrellas = [];
+    for (let i = 0; i < this.state.recipe_data.Estrellas; i++)
+      estrellas.push(<Icon key={i} name="star" size={24} color="gold" />);
 		
+
     return (
 			<TouchableOpacity onPress={() => this.showRecipe(this.state.recipe_data, this.state.recipe_image)}>
 				<View style={styles.cardContainer}>
-					{/* <Image  style={styles.image} /> */}
+					<Image
+            source={imagenReceta}
+            style={styles.image}
+          />
+					
 					<View style={styles.infoContainer}>
 						<Text style={styles.title}>{this.state.recipe_data.Nombre}</Text>
 						<Text style={styles.subTitle}>Tipo: {this.state.recipe_data.Tipo}</Text>
 						<Text style={styles.subTitle}>Tiempo: {this.state.recipe_data.Tiempo} minutos</Text>
-						<Text style={styles.subTitle}>Estrellas: {this.state.recipe_data.Estrellas}</Text>
+						<View style={styles.detalle}>
+							{estrellas}
+						</View>
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -134,6 +152,11 @@ const styles = StyleSheet.create({
   },
   process: {
     fontSize: 16,
+  },
+	detalle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
   },
 });
 
