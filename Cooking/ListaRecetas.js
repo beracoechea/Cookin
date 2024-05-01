@@ -83,9 +83,10 @@ export default class ListaRecetas extends Component {
   };
 
   verReceta = (receta) => {
-    this.props.navigation.navigate('Receta', { receta, imagenesRecetas });
+    const { navigation, route } = this.props;
+    navigation.navigate('Receta', { receta, imagenesRecetas, email: route.params.email });
   };
-
+  
   render() {
     return (
       <View style={styles.container}>

@@ -70,10 +70,10 @@ export default class MisRecetas extends Component {
 					{
 						/* Map each recipe from the user */
 						this.state.fav_recipes.map((recipe, key) => <CardFavReceta
-																													id={recipe}
-																													navigation={this.props.navigation}
-																													key={key}
-																												/>)
+														id={recipe}
+															navigation={this.props.navigation}
+															key={key}											
+																	/>)
 					}
 				</View>
 			</ScrollView>

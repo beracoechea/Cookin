@@ -82,13 +82,14 @@ export default class Menu extends Component {
             </Tab.Screen>
 
             <Tab.Screen
-          name="ListaRecetas"
-          component={ListaRecetas}
-          options={{
-            tabBarLabel: 'Recetario',
-            headerShown: false,
-          }}
-        />
+                name="ListaRecetas"
+                component={ListaRecetas}
+                options={{
+                  tabBarLabel: 'Recetario',
+                  headerShown: false,
+                }}
+                 initialParams={{ email }} 
+/>
       </Tab.Navigator>
     );
   }
