@@ -11,14 +11,23 @@ const Receta = ({ route }) => {
         source={imagenesRecetas[receta.Imagen]}
         style={styles.imagen}
       />
-      <Text style={styles.subtitulo}>Ingredientes:</Text>
-      <Text style={styles.texto}>{receta.Ingredientes}</Text>
-      <Text style={styles.subtitulo}>Proceso:</Text>
-      <Text style={styles.texto}>{receta.Proceso}</Text>
       <Text style={styles.subtitulo}>Tiempo de preparación:</Text>
       <Text style={styles.texto}>{receta.Tiempo} minutos</Text>
+      
+      <Text style={styles.subtitulo}>Ingredientes:</Text>
+      {receta.Ingredientes.map((ingrediente, index) => (
+        <Text key={index} style={styles.texto}>
+          {ingrediente}
+        </Text>
+      ))}
+      <Text style={styles.subtitulo}>Proceso:</Text>
+      {receta.Proceso.map((paso, index) => (
+        <Text key={index} style={styles.texto}>
+          {paso}
+        </Text>
+      ))}
+      
       <View style={styles.divider}></View>
-      <Text style={styles.creditos}>Cooking App</Text>
     </ScrollView>
   );
 };

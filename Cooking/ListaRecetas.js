@@ -7,7 +7,6 @@ import appFirebase from './credenciales';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const firestore = getFirestore(appFirebase);
 
-
 // Importamos las imagenes recetas
 import imagenesRecetas from './imagenesRecetas.js';
 
@@ -23,6 +22,21 @@ export default class ListaRecetas extends Component {
   }
 
   componentDidMount() {
+    // Obtener las recetas inicialmente
+    this.obtenerRecetas();
+
+    // Establecer la actualización automática cada 5 segundos
+    this.intervaloRecetas = setInterval(() => {
+      this.obtenerRecetas();
+    }, 5000);
+  }
+
+  componentWillUnmount() {
+    // Limpiar el intervalo cuando el componente se desmonte para evitar fugas de memoria
+    clearInterval(this.intervaloRecetas);
+  }
+
+  obtenerRecetas = () => {
     const recetasRef = collection(firestore, 'Recetas');
     getDocs(recetasRef)
       .then((snapshot) => {
@@ -69,7 +83,6 @@ export default class ListaRecetas extends Component {
   };
 
   verReceta = (receta) => {
-		console.log(receta);
     this.props.navigation.navigate('Receta', { receta, imagenesRecetas });
   };
 
