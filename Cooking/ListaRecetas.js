@@ -7,12 +7,9 @@ import appFirebase from './credenciales';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const firestore = getFirestore(appFirebase);
 
-const imagenesRecetas = {
-  'HuevosItalianos.png': require('./Images/Recetas/HuevosItalianos.png'),
-  'TingasPollo.png': require('./Images/Recetas/TingasPollo.png'),
-  'EnsaladaMaiz.png':require('./Images/Recetas/EnsaladaMaiz.png'),
-  'Hotcakes.png':require('./Images/Recetas/Hotcakes.png')
-};
+
+// Importamos las imagenes recetas
+import imagenesRecetas from './imagenesRecetas.js';
 
 export default class ListaRecetas extends Component {
   constructor(props) {

@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { Component } from 'react';
 
 
@@ -8,14 +8,21 @@ import appFirebase from './credenciales';
 // Inicializa Firestore
 const firestore = getFirestore(appFirebase);
 
+
+import imagenesRecetas from './imagenesRecetas.js';
+
 export default class CardFavReceta extends Component {
 	constructor(props) {
 		super(props);
 		this.recipe_id = props.id;
 
 		this.state = {
-			recipe_data: {}
+			recipe_data: {},
+			recipe_image: undefined,
+			state_data: 1
 		};
+		
+		this.showRecipe = this.showRecipe.bind(this);
 	}
 
 	async fetch_recipe_data() {
@@ -25,32 +32,108 @@ export default class CardFavReceta extends Component {
 				const recipeDoc = await getDoc(doc(firestore, "Recetas", this.recipe_id));
 				if (recipeDoc.exists()) {
 					const data = recipeDoc.data();
-					this.setState((prev_state) => {
-						return {
-							recipe_data: data
-						}
-					}); 
+					const recipe_image = imagenesRecetas[data.Imagen];
+					this.setState({
+						recipe_data: data,
+						recipe_image: recipe_image,
+						state_data: 0
+					});
 				} else {
 					console.log("Documento no existe :(");
+					this.setState({
+						recipe_data: {},
+						recipe_image: undefined,
+						state_data: -1
+					});
 				}
 			} catch (error) {
 				console.error("Error al obtener los datos de receta: ", error);
 				alert("error al obtener los datos de receta");
+				this.setState({
+					recipe_data: {},
+					recipe_image: undefined,
+					state_data: -1
+				});
 			}
 		}
+	}
+
+	showRecipe(recipe_data, recipe_image) {
+		this.props.navigation.navigate('Receta', { recipe_data, imagenesRecetas});
 	}
 	
   render() {
 		this.fetch_recipe_data();
 
-		if (Object.keys(this.state.recipe_data).length === 0)
-			return <View><Text>Cargando...</Text></View>;
+
+		if (this.state.state_data === -1)
+			return <View><Text style={styles.title}>Error...</Text></View>;
+
+		else if (this.state.state_data === 1)
+			return <View><Text style={styles.title}>Cargando...</Text></View>;
 		
     return (
-      <View>
-        <Text>Card recipe {this.recipe_id}</Text>
-      </View>
+			<TouchableOpacity onPress={() => this.showRecipe(this.state.recipe_data, this.state.recipe_image)}>
+				<View style={styles.cardContainer}>
+					{/* <Image  style={styles.image} /> */}
+					<View style={styles.infoContainer}>
+						<Text style={styles.title}>{this.state.recipe_data.Nombre}</Text>
+						<Text style={styles.subTitle}>Tipo: {this.state.recipe_data.Tipo}</Text>
+						<Text style={styles.subTitle}>Tiempo: {this.state.recipe_data.Tiempo} minutos</Text>
+						<Text style={styles.subTitle}>Estrellas: {this.state.recipe_data.Estrellas}</Text>
+					</View>
+				</View>
+			</TouchableOpacity>
     )
   }
 }
+
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    margin: 10,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  image: {
+    width: 120,
+    height: 120,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  subTitle: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  ingredients: {
+    fontSize: 16,
+  },
+  process: {
+    fontSize: 16,
+  },
+});
 
