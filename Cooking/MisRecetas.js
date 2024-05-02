@@ -67,6 +67,7 @@ export default class MisRecetas extends Component {
     return (
 			<ScrollView style={styles.container}>
 				<View>
+					<Text style={styles.title}>Recetas Favoritas:</Text>
 					{
 						/* Map each recipe from the user */
 						this.state.fav_recipes.map((recipe, key) => <CardFavReceta
