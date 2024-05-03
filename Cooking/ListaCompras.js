@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
+    marginLeft:15,
   },
   checkIcon: {
     fontSize: 20,
