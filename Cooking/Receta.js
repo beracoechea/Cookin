@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity,Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getFirestore, doc, addDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import appFirebase from './credenciales';
@@ -14,10 +14,6 @@ const Receta = ({ route }) => {
   const [isFavorited, setIsFavorited] = useState(false);
 
   useEffect(() => {
-    // Verificar si la receta ya está en favoritos al cargar la pantalla
-    // Esto se puede hacer consultando la colección de favoritos del usuario
-    // y comparando los IDs de las recetas.
-    // Si la receta está en favoritos, establece isFavorited en true.
     checkIfFavorited();
   }, []);
 
@@ -28,14 +24,13 @@ const Receta = ({ route }) => {
       const favoritesRef = collection(userRef, 'Favoritas');
 
       // Realizar una consulta para verificar si la receta ya está en favoritos
-      // Puedes adaptar esta consulta según la estructura de tus datos
-      // Por ejemplo, si tienes el ID de la receta en la misma colección, puedes buscar por ese ID
       const querySnapshot = await getDocs(favoritesRef);
       const favoritedRecipes = querySnapshot.docs.map(doc => doc.data());
 
       // Verificar si la receta está en la lista de recetas favoritas
       const isAlreadyFavorited = favoritedRecipes.some(recipe => recipe.Nombre === receta.Nombre);
       setIsFavorited(isAlreadyFavorited);
+      setIsPressed(isAlreadyFavorited); // Si ya está en favoritos, el ícono debe estar iluminado
     } catch (error) {
       console.error('Error checking if recipe is favorited:', error);
     }
@@ -52,20 +47,37 @@ const Receta = ({ route }) => {
         setIsPressed(true);
         console.log('Recipe added to favorites');
       } else {
-        // Si la receta ya está en favoritos, elimínala
-        const userRef = doc(firestore, 'Usuarios', email);
-        const favoritesRef = collection(userRef, 'Favoritas');
-        const querySnapshot = await getDocs(favoritesRef);
-        const favoritedRecipes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const favoritedRecipe = favoritedRecipes.find(recipe => recipe.Nombre === receta.Nombre);
-        if (favoritedRecipe && favoritedRecipe.id) {
-          await deleteDoc(doc(favoritesRef, favoritedRecipe.id)); // Eliminar la receta de favoritos
-          setIsFavorited(false);
-          setIsPressed(false);
-          console.log('Recipe removed from favorites');
-        } else {
-          console.error('Error: favorited recipe not found or ID is empty');
-        }
+        // Si la receta ya está en favoritos, mostrar confirmación antes de eliminar
+        Alert.alert(
+          'Eliminar receta',
+          '¿Estás seguro de que quieres eliminar esta receta de tus favoritos?',
+          [
+            {
+              text: 'Cancelar',
+              onPress: () => console.log('Cancelado'),
+              style: 'cancel',
+            },
+            {
+              text: 'Eliminar',
+              onPress: async () => {
+                const userRef = doc(firestore, 'Usuarios', email);
+                const favoritesRef = collection(userRef, 'Favoritas');
+                const querySnapshot = await getDocs(favoritesRef);
+                const favoritedRecipes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const favoritedRecipe = favoritedRecipes.find(recipe => recipe.Nombre === receta.Nombre);
+                if (favoritedRecipe && favoritedRecipe.id) {
+                  await deleteDoc(doc(favoritesRef, favoritedRecipe.id)); // Eliminar la receta de favoritos
+                  setIsFavorited(false);
+                  setIsPressed(false);
+                  console.log('Recipe removed from favorites');
+                } else {
+                  console.error('Error: favorited recipe not found or ID is empty');
+                }
+              },
+            },
+          ],
+          { cancelable: false }
+        );
       }
     } catch (error) {
       console.error('Error adding or removing recipe from favorites:', error);

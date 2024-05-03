@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import appFirebase from './credenciales';
+import LinearGradient from 'react-native-linear-gradient';
 
 // Importar los íconos de estrella necesarios
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -89,30 +90,38 @@ export default class ListaRecetas extends Component {
   
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.titulo}>Desayunos</Text>
-        <FlatList
-          horizontal={true} // Configurar la lista como horizontal
-          data={this.state.desayunos}
-          renderItem={({ item }) => this.renderReceta(item)}
-          keyExtractor={(item, index) => index.toString()}
-        />
+      <View>
+        <LinearGradient
+          colors={['#007A8C', '#456B6B']}
+          style={styles.headerGradient}
+        >
+          <Text style={styles.headerTitle}>Recetario</Text>
+        </LinearGradient>
+        <View style={styles.container}>
+          <Text style={styles.sectionTitle}>Desayuno</Text>
+          <FlatList
+            horizontal={true} // Configurar la lista como horizontal
+            data={this.state.desayunos}
+            renderItem={({ item }) => this.renderReceta(item)}
+            keyExtractor={(item, index) => index.toString()}
+          />
 
-        <Text style={styles.titulo}>Comidas</Text>
-        <FlatList
-          horizontal={true} // Configurar la lista como horizontal
-          data={this.state.comidas}
-          renderItem={({ item }) => this.renderReceta(item)}
-          keyExtractor={(item, index) => index.toString()}
-        />
+          <Text style={styles.sectionTitle}>Comida</Text>
+          <FlatList
+            horizontal={true} // Configurar la lista como horizontal
+            data={this.state.comidas}
+            renderItem={({ item }) => this.renderReceta(item)}
+            keyExtractor={(item, index) => index.toString()}
+          />
 
-        <Text style={styles.titulo}>Cenas</Text>
-        <FlatList
-          horizontal={true} // Configurar la lista como horizontal
-          data={this.state.cenas}
-          renderItem={({ item }) => this.renderReceta(item)}
-          keyExtractor={(item, index) => index.toString()}
-        />
+          <Text style={styles.sectionTitle}>Cena</Text>
+          <FlatList
+            horizontal={true} // Configurar la lista como horizontal
+            data={this.state.cenas}
+            renderItem={({ item }) => this.renderReceta(item)}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
       </View>
     );
   }
@@ -120,18 +129,28 @@ export default class ListaRecetas extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#007f7f',
     paddingHorizontal: 20, // Ajustar el padding horizontal
   },
+  headerGradient: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   itemContainer: {
-    marginVertical: 10, // Ajustar el margen vertical
-    marginRight: 10, // Ajustar el margen derecho para separar los elementos
+    marginVertical: 10,
+    marginRight: 10,
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
     backgroundColor: '#005959',
-    flexDirection: 'row', // Cambiar la dirección a horizontal
+    flexDirection: 'row',
     alignItems: 'center',
   },
   image: {
@@ -158,10 +177,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontWeight: 'bold',
   },
-  titulo: {
-    color: '#ffffff',
+  sectionTitle: {
+    color: '#005959',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10, // Ajustar el margen inferior
+    marginBottom: 10,
   },
 });

@@ -7,6 +7,11 @@ const imagenesRecetas = {
   'ChuletasAlbañil.png':require('./Images/Recetas/ChuletasAlbañil.png'),
   'CopazYogurt.png':require('./Images/Recetas/CopazYogurt.png'),
   'YogurtAvena.png':require('./Images/Recetas/YogurtAvena.png'),
+  'ChilaquilesRellenos.png':require('./Images/Recetas/ChilaquilesRellenos.png'),
+  'SardinaMexicana.png':require('./Images/Recetas/SardinaMexicana.png'),
+  'SandwichFrío.png':require('./Images/Recetas/SandwichFrío.png'),
+  'HabasSalsaRoja.png':require('./Images/Recetas/HabasSalsaRoja.png'),
+
 };
 
 
