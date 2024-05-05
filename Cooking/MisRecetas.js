@@ -19,16 +19,8 @@ export default class ListaRecetas extends Component {
   }
 
   componentDidMount() {
-    // Obtener las recetas favoritas del usuario
+    // Obtener las recetas favoritas del usuario al cargar la pantalla por primera vez
     this.obtenerRecetasFavoritas();
-
-    // Actualizar cada 5 segundos
-    this.interval = setInterval(this.obtenerRecetasFavoritas, 3000);
-  }
-
-  componentWillUnmount() {
-    // Limpiar el intervalo al desmontar el componente
-    clearInterval(this.interval);
   }
 
   obtenerRecetasFavoritas = () => {

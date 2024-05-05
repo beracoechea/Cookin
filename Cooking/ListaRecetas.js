@@ -3,13 +3,10 @@ import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet } from 'react
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import appFirebase from './credenciales';
 import LinearGradient from 'react-native-linear-gradient';
-
-// Importar los íconos de estrella necesarios
 import Icon from 'react-native-vector-icons/FontAwesome';
-const firestore = getFirestore(appFirebase);
-
-// Importamos las imagenes recetas
 import imagenesRecetas from './imagenesRecetas.js';
+
+const firestore = getFirestore(appFirebase);
 
 export default class ListaRecetas extends Component {
   constructor(props) {
@@ -25,16 +22,6 @@ export default class ListaRecetas extends Component {
   componentDidMount() {
     // Obtener las recetas inicialmente
     this.obtenerRecetas();
-
-    // Establecer la actualización automática cada 5 segundos
-    this.intervaloRecetas = setInterval(() => {
-      this.obtenerRecetas();
-    }, 5000);
-  }
-
-  componentWillUnmount() {
-    // Limpiar el intervalo cuando el componente se desmonte para evitar fugas de memoria
-    clearInterval(this.intervaloRecetas);
   }
 
   obtenerRecetas = () => {
@@ -52,10 +39,12 @@ export default class ListaRecetas extends Component {
       });
   }
 
+  componentWillUnmount() {
+    // No hay necesidad de limpiar el intervalo ya que no se está utilizando
+  }
+
   renderReceta = (item) => {
     const imagenReceta = imagenesRecetas[item.Imagen];
-  
-    // Crear una matriz de íconos de estrella
     const estrellas = [];
     for (let i = 0; i < item.Estrellas; i++) {
       estrellas.push(<Icon key={i} name="star" size={24} color="gold" />);
@@ -100,7 +89,7 @@ export default class ListaRecetas extends Component {
         <View style={styles.container}>
           <Text style={styles.sectionTitle}>Desayuno</Text>
           <FlatList
-            horizontal={true} // Configurar la lista como horizontal
+            horizontal={true}
             data={this.state.desayunos}
             renderItem={({ item }) => this.renderReceta(item)}
             keyExtractor={(item, index) => index.toString()}
@@ -108,7 +97,7 @@ export default class ListaRecetas extends Component {
 
           <Text style={styles.sectionTitle}>Comida</Text>
           <FlatList
-            horizontal={true} // Configurar la lista como horizontal
+            horizontal={true}
             data={this.state.comidas}
             renderItem={({ item }) => this.renderReceta(item)}
             keyExtractor={(item, index) => index.toString()}
@@ -116,7 +105,7 @@ export default class ListaRecetas extends Component {
 
           <Text style={styles.sectionTitle}>Cena</Text>
           <FlatList
-            horizontal={true} // Configurar la lista como horizontal
+            horizontal={true}
             data={this.state.cenas}
             renderItem={({ item }) => this.renderReceta(item)}
             keyExtractor={(item, index) => index.toString()}
@@ -129,7 +118,7 @@ export default class ListaRecetas extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20, // Ajustar el padding horizontal
+    paddingHorizontal: 20,
   },
   headerGradient: {
     paddingHorizontal: 20,

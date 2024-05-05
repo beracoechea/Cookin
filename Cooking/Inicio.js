@@ -6,7 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 
-// Inicializa Firestore
 const firestore = getFirestore(appFirebase);
 
 export default class Inicio extends Component {
@@ -34,18 +33,9 @@ export default class Inicio extends Component {
   };
 
   componentDidMount() {
-    // Configurar opciones de navegación
     this.props.navigation.setOptions({
       title: 'Perfil del Usuario',
     });
-
-    // Actualizar los datos cada 5 segundos
-    this.updateInterval = setInterval(this.getUserData, 5000);
-  }
-
-  componentWillUnmount() {
-    // Limpiar el intervalo al desmontar el componente
-    clearInterval(this.updateInterval);
   }
 
   getUserData = async () => {
@@ -54,8 +44,8 @@ export default class Inicio extends Component {
       const userDoc = await getDoc(doc(firestore, 'Usuarios', email));
       if (userDoc.exists()) {
         const data = userDoc.data();
-        this.setState({ usuario: data }); // Actualizar el estado del usuario
-        this.calcularNecesidadesNutricionales(data); // Calcular necesidades nutricionales
+        this.setState({ usuario: data });
+        this.calcularNecesidadesNutricionales(data);
       } else {
         console.log('El documento de usuario no existe');
       }
@@ -66,24 +56,11 @@ export default class Inicio extends Component {
 
   calcularNecesidadesNutricionales = (usuario) => {
     const { edad, estatura, peso } = usuario;
-
-    // Calcular las necesidades nutricionales aquí
-    // Utilizando las fórmulas proporcionadas anteriormente
-  
-    // Factor de actividad física (FAF)
-    const FAF = 1.55; // Factor para actividad física moderada
-  
-    // Calorías totales requeridas por día (CT)
+    const FAF = 1.55;
     const CT = Math.round((10 * peso + 6.25 * estatura - 5 * edad + 5) * FAF);
-  
-    // Proteínas requeridas por día (P)
     const P = Math.round(1.2 * peso);
-  
-    // Carbohidratos requeridos por día (C)
     const C = Math.round(6 * peso);
-  
-    // Grasas requeridas por día (G)
-    const G = Math.round(0.35 * CT / 9); // El 35% de las calorías totales provienen de las grasas
+    const G = Math.round(0.35 * CT / 9);
   
     this.setState({
       necesidadesNutricionales: {
@@ -108,25 +85,21 @@ export default class Inicio extends Component {
     const { editedParam, editedValue } = this.state;
     try {
       await updateDoc(doc(firestore, 'Usuarios', email), { [editedParam]: editedValue });
-      await this.getUserData(); // Llamar a getUserData después de guardar los cambios
       this.setState({ modalVisible: false });
+      await this.getUserData();
     } catch (error) {
       console.error('Error al actualizar los datos del usuario:', error);
     }
   };
 
   handleMealConsumed = async (tipoComida) => {
-    // Lógica para actualizar la base de datos
     const { email } = this.props.route.params;
 
-    // Verificar si el botón ya está en estado true
     if (this.state[`${tipoComida}Comio`]) {
-      // El botón ya está marcado como consumido, no hacer nada
       return;
     }
 
     try {
-      // Inicializar variables para determinar cuál es el próximo tipo de comida
       let nextComida = '';
       let nextState = {};
 
@@ -159,31 +132,22 @@ export default class Inicio extends Component {
           break;
       }
 
-      // Crear el objeto con las actualizaciones
       const updates = {
         [tipoComida]: true,
       };
 
-      // Actualizar el documento del perro en la base de datos
       await updateDoc(doc(firestore, 'Usuarios', email), updates);
-
-      // Marca como falso el estado de la próxima comida
       await updateDoc(doc(firestore, 'Usuarios', email), {
         [nextComida]: false
       });
 
-      await this.getUserData(); // Actualiza los datos del perro después de guardar los cambios
-
-      // Actualiza el estado correspondiente al botón presionado y al siguiente botón
+      await this.getUserData();
       this.setState({ ...nextState });
     } catch (error) {
-      console.error('Error al actualizar los datos del perro:', error);
+      console.error('Error al actualizar los datos del usuario:', error);
     }
   };
 
- 
-
-  
   render() {
     const { desayuno, almuerzo, cena, colacion, postre } = this.state.usuario;
     const { necesidadesNutricionales } = this.state;
@@ -192,65 +156,38 @@ export default class Inicio extends Component {
 
     return (
       <View style={styles.container}>
-        {/*Perfil del usuario */}
         <LinearGradient
-  colors={['#007A8C', '#456B6B']} 
-  style={styles.gradient} // Aplica el estilo del gradiente al contenedor de información del usuario
->
-  <View style={styles.infoContainer}>
-  <TouchableOpacity>
-        {usuario.sexo === 'Hombre' ? (
-          <MaterialCommunityIcons name="gender-male" size={30} color="blue" style={styles.genderIcon} />
-        ) : (
-          <MaterialCommunityIcons name="gender-female" size={30} color="red" style={styles.genderIcon} />
-        )}
-      </TouchableOpacity>
-    <View style={styles.infoRow}>
-      <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('nombre')}>
-        <Text style={styles.infoTextName}>{usuario.nombre}</Text>
-      </TouchableOpacity>
-      
-      
-    </View>
-
-    <View style={styles.infoRow}>
-      <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('edad')}>
-        <Text style={styles.editableFieldText}>{usuario.edad} años</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('peso')}>
-        <Text style={styles.editableFieldText}>{usuario.peso} {usuario.pesoUnit}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('estatura')}>
-        <Text style={styles.editableFieldText}>{usuario.estatura} {usuario.estaturaUnit}</Text>
-      </TouchableOpacity>
-
-     
-    </View>
-  </View>
-</LinearGradient>
+          colors={['#007A8C', '#456B6B']}
+          style={styles.gradient}
+        >
+          <View style={styles.infoContainer}>
+            <TouchableOpacity>
+              {usuario.sexo === 'Hombre' ? (
+                <MaterialCommunityIcons name="gender-male" size={30} color="blue" style={styles.genderIcon} />
+              ) : (
+                <MaterialCommunityIcons name="gender-female" size={30} color="red" style={styles.genderIcon} />
+              )}
+            </TouchableOpacity>
+            <View style={styles.infoRow}>
+              <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('nombre')}>
+                <Text style={styles.infoTextName}>{usuario.nombre}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.infoRow}>
+              <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('edad')}>
+                <Text style={styles.editableFieldText}>{usuario.edad} años</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('peso')}>
+                <Text style={styles.editableFieldText}>{usuario.peso} {usuario.pesoUnit}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.editableField, styles.infoField]} onPress={() => this.handleEditParam('estatura')}>
+                <Text style={styles.editableFieldText}>{usuario.estatura} {usuario.estaturaUnit}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </LinearGradient>
 
         <ScrollView contentContainerStyle={styles.scroll}>
-
-       {/* Indica las calorías a consumir del usuario */}
-       <View style={styles.header}>
-  <View style={styles.caloriesContainer}>
-    <LinearGradient
-      colors={['#007f7f', '#005959']} // Colores más oscuros para el gradiente
-      style={styles.circle} // Aplica el estilo del gradiente al contenedor del círculo
-    >
-      <Text style={styles.circleText}>{necesidadesNutricionales.caloriasTotales.toFixed(2)}</Text>
-      <Text style={styles.circleLabel}>Kcal</Text>
-    </LinearGradient>
-    <View style={styles.caloriesInfo}>
-      <Text style={styles.buttonText}>Proteínas: {necesidadesNutricionales.proteinas.toFixed(2)} g</Text>
-      <Text style={styles.buttonText}>Carbs: {necesidadesNutricionales.carbohidratos.toFixed(2)} g</Text>
-      <Text style={styles.buttonText}>Grasas: {necesidadesNutricionales.grasas.toFixed(2)} g</Text>
-    </View>
-  </View>
-</View>
-          {/* Botones para indicar que el usuario ha comido */}
           <View style={styles.header}>
             <Text style={styles.headerText}>Horas de comida</Text>
           </View>
@@ -315,7 +252,8 @@ export default class Inicio extends Component {
             </View>
           </TouchableOpacity>
 
-          {/* Modal para editar el perfil*/}
+          {/* Resto de botones de comidas aquí */}
+
           <Modal
             animationType="slide"
             transparent={true}
@@ -341,9 +279,6 @@ export default class Inicio extends Component {
               </View>
             </View>
           </Modal>
-
-          
-
         </ScrollView>
       </View>
     );
@@ -360,7 +295,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   infoContainer: {
-
     marginLeft: 20,
     paddingVertical: 20,
   },
@@ -382,9 +316,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   genderIcon: {
-    position: 'absolute', // Establecemos la posición del icono como absoluta
-    top: 0, // Alineamos el icono en la parte superior del contenedor
-    right: 0, // Alineamos el icono en la esquina superior derecha del contenedor
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
   infoRow: {
     flexDirection: 'row',
@@ -497,4 +431,4 @@ const styles = StyleSheet.create({
   caloriesInfo: {
     flex: 1,
   },
-});
+})
