@@ -279,13 +279,53 @@ export default class Inicio extends Component {
               </View>
             </View>
           </Modal>
+					<TouchableOpacity>
+					<View style={styles.containerText}>
+						<Text style={styles.buttonText}>Agregar Recetas</Text>
+					</View>
+				</TouchableOpacity>
         </ScrollView>
-      </View>
+
+				{/*
+					 <View style={styles.containerButton}>
+					<TouchableOpacity style={styles.addButtonRecipes}>
+						<MaterialCommunityIcons name="plus" size={32} color="white" />
+					</TouchableOpacity>
+				</View>
+				 */}
+
+				
+				
+				</View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+	containerText: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    paddingBottom: 5, // Adjust this value to control the space between text and underline
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#008080',
+    textDecorationLine: 'underline',
+  },
+	containerButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
+  addButtonRecipes: {
+    backgroundColor: '#008080',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
