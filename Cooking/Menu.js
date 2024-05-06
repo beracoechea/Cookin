@@ -8,6 +8,7 @@ import ListaCompras from './ListaCompras';
 import ListaRecetas from './ListaRecetas';
 
 
+
 const Tab = createBottomTabNavigator();
 
 export default class Menu extends Component {
@@ -38,7 +39,7 @@ export default class Menu extends Component {
               iconName = focused ? 'notebook-check' : 'notebook-check';
             }
 
-          return <MaterialCommunityIcons name={iconName} color={color} size={size} />;
+						return <MaterialCommunityIcons name={iconName} color={color} size={size} />;
           },
           tabBarActiveTintColor: '#456B6B', 
           tabBarInactiveTintColor: '#999999', 
@@ -51,45 +52,49 @@ export default class Menu extends Component {
           },
         })}
       >
-        <Tab.Screen
-          name="Inicio"
-          initialParams={{ email}}
-          options={{
-            tabBarLabel: 'Inicio',
-            headerShown: false,
-          }}>
-          {(props) => <Inicio {...props} email={email} />}
-        </Tab.Screen>
-        <Tab.Screen
-              name="MisRecetas"
-              initialParams={{ email}}
-              options={{
-                tabBarLabel: 'MisRecetas',
-                headerShown: false,
-              }}
-            >
-               {(props) => <MisRecetas {...props} email={email} />}
-            </Tab.Screen>
-            <Tab.Screen
-              name="ListaCompras"
-              initialParams={{ email}}
-              options={{
-                tabBarLabel: 'Super',
-                headerShown: false,
-              }}
-            >
-               {(props) => <ListaCompras {...props} email={email} />}
-            </Tab.Screen>
+      <Tab.Screen
+        name="Inicio"
+        initialParams={{ email}}
+        options={{
+          tabBarLabel: 'Inicio',
+          headerShown: false,
+        }}>
+        {(props) => <Inicio {...props} email={email} />}
+      </Tab.Screen>
+			
+      <Tab.Screen
+        name="MisRecetas"
+        initialParams={{ email}}
+        options={{
+          tabBarLabel: 'MisRecetas',
+          headerShown: false,
+        }}
+      >
+        {(props) => <MisRecetas {...props} email={email} />}
+      </Tab.Screen>
+			
+      <Tab.Screen
+        name="ListaCompras"
+        initialParams={{ email}}
+        options={{
+          tabBarLabel: 'Super',
+          headerShown: false,
+        }}
+      >
+        {(props) => <ListaCompras {...props} email={email} />}
+      </Tab.Screen>
 
-            <Tab.Screen
-                name="ListaRecetas"
-                component={ListaRecetas}
-                options={{
-                  tabBarLabel: 'Recetario',
-                  headerShown: false,
-                }}
-                 initialParams={{ email }} 
-/>
+      <Tab.Screen
+        name="ListaRecetas"
+        component={ListaRecetas}
+        options={{
+          tabBarLabel: 'Recetario',
+          headerShown: false,
+        }}
+        initialParams={{ email }} 
+			/>
+			
+			
       </Tab.Navigator>
     );
   }

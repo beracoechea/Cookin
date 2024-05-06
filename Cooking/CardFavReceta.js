@@ -60,7 +60,6 @@ export default class CardFavReceta extends Component {
 	}
 
 	showRecipe(recipe_data, recipe_image) {
-		console.log(recipe_data);
 		this.props.navigation.navigate('Receta', { recipe_data, imagenesRecetas });
 	}
 	

@@ -16,6 +16,7 @@ export default class Inicio extends Component {
     postreComio: false,
     colacionComio: false,
     modalVisible: false,
+		isChef: false,
     usuario: {
       nombre: '',
       edad: '',
@@ -32,6 +33,11 @@ export default class Inicio extends Component {
     },
   };
 
+	constructor(props) {
+		super(props);
+		this.moveToRecipeUpload = this.moveToRecipeUpload.bind(this);
+	}
+
   componentDidMount() {
     this.props.navigation.setOptions({
       title: 'Perfil del Usuario',
@@ -44,7 +50,7 @@ export default class Inicio extends Component {
       const userDoc = await getDoc(doc(firestore, 'Usuarios', email));
       if (userDoc.exists()) {
         const data = userDoc.data();
-        this.setState({ usuario: data });
+        this.setState({ usuario: data, isChef: data.isChef });
         this.calcularNecesidadesNutricionales(data);
       } else {
         console.log('El documento de usuario no existe');
@@ -147,6 +153,17 @@ export default class Inicio extends Component {
       console.error('Error al actualizar los datos del usuario:', error);
     }
   };
+
+
+	userHasPermission() {
+		// Check if the user is valid for upload recipes
+		return "isChef" in this.state && this.state.isChef;
+	}
+
+	moveToRecipeUpload() {
+		this.props.navigation.navigate('UploadRecipe', { email: this.state.usuario.email });
+	}
+	
 
   render() {
     const { desayuno, almuerzo, cena, colacion, postre } = this.state.usuario;
@@ -279,52 +296,37 @@ export default class Inicio extends Component {
               </View>
             </View>
           </Modal>
-					<TouchableOpacity>
-					<View style={styles.containerText}>
-						<Text style={styles.buttonText}>Agregar Recetas</Text>
-					</View>
-				</TouchableOpacity>
+
+
+					{
+						this.userHasPermission() &&
+							<TouchableOpacity style={styles.buttonAddNewRecipe} onPress={() => this.moveToRecipeUpload()}>
+								<MaterialCommunityIcons name="plus" size={32} color="white" />
+								<Text style={styles.textAddNewRecipe}>Agregar Recetas</Text>
+							</TouchableOpacity>
+					}
+					
         </ScrollView>
-
-				{/*
-					 <View style={styles.containerButton}>
-					<TouchableOpacity style={styles.addButtonRecipes}>
-						<MaterialCommunityIcons name="plus" size={32} color="white" />
-					</TouchableOpacity>
-				</View>
-				 */}
-
-				
-				
 				</View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-	containerText: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 1,
-    paddingBottom: 5, // Adjust this value to control the space between text and underline
-  },
-  buttonText: {
-    fontSize: 16,
-    color: '#008080',
-    textDecorationLine: 'underline',
-  },
-	containerButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
-  addButtonRecipes: {
+	textAddNewRecipe: {
+		fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+	},
+	buttonAddNewRecipe: {
+		flexDirection: 'row', // Arrange items horizontally
+    width: '100%',
+    height: 50,
     backgroundColor: '#008080',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25,
+    margin: 10,
   },
   container: {
     flex: 1,

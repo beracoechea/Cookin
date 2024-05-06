@@ -17,9 +17,16 @@ export default function UserProfile({ route }) {
   const [sexo, setSexo] = useState('');
   const [estatura, setEstatura] = useState('');
   const [peso, setPeso] = useState('');
+	
   const [estaturaUnit, setEstaturaUnit] = useState('cm');
   const [pesoUnit, setPesoUnit] = useState('kg');
-  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true); 
+  const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
+
+	 const [isChef, setIsChef] = useState(false);
+
+  const handleToggle = () => {
+    setIsChef(!isChef);
+  };
 
   useEffect(() => {
     // Lógica para habilitar o deshabilitar el botón de guardar
@@ -36,6 +43,7 @@ export default function UserProfile({ route }) {
         nombre,
         edad,
         sexo,
+				isChef,
         estatura,
         estaturaUnit,
         peso,
@@ -127,6 +135,7 @@ export default function UserProfile({ route }) {
                 </TouchableOpacity>
               </View>
             </View>
+
             <View style={styles.genderIconsContainer}>
               <TouchableOpacity onPress={() => setSexo('Hombre')}>
                 <MaterialCommunityIcons name="gender-male" size={40} color={sexo === 'Hombre' ? '#56CCF5' : '#CDCDCD'} />
@@ -135,6 +144,19 @@ export default function UserProfile({ route }) {
                 <MaterialCommunityIcons name="gender-female" size={40} color={sexo === 'Mujer' ? '#FF69B4' : '#CDCDCD'} />
               </TouchableOpacity>
             </View>
+
+						<View style={{ flexDirection: 'row', alignItems: 'center', 	marginTop: 25, }}>
+							<Text style={styles.text}>Poder agregar recetas</Text>
+							<TouchableOpacity onPress={handleToggle} >
+                <MaterialCommunityIcons
+                  name={isChef ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                  size={32}
+                  color={isChef ? '#04D695' : 'white'}
+                />
+							</TouchableOpacity>
+						</View>
+						
+						
             <TouchableOpacity
               style={[styles.saveButton, saveButtonDisabled && styles.saveButtonDisabled]}
               onPress={handleSaveButtonPress}
@@ -143,6 +165,8 @@ export default function UserProfile({ route }) {
               <Text style={styles.saveButtonText}>Guardar</Text>
             </TouchableOpacity>
           </View>
+
+					
         </View>
       </ScrollView>
     </ImageBackground>
@@ -150,6 +174,12 @@ export default function UserProfile({ route }) {
 }
 
 const styles = StyleSheet.create({
+	text: {
+		fontSize: 17,
+    fontWeight: 'bold',
+    color: '#fff',
+		marginRight: 30,
+	},
   container: {
     flexGrow: 1,
     alignItems: 'center',

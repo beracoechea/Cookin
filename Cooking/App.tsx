@@ -18,6 +18,7 @@ import MisRecetas from './MisRecetas';
 import ListaCompras from './ListaCompras';
 import ListaRecetas from './ListaRecetas';
 import Inicio from './Inicio';
+import UploadRecipe from './uploadRecipe.js';
 
 
 const Stack = createStackNavigator();
@@ -41,10 +42,10 @@ function App(): JSX.Element {
         <Stack.Screen name="MisRecetas" component={MisRecetas} options={{ headerShown: false }}/>
 
         <Stack.Screen name="ListaCompras" component={ListaCompras} options={{ headerShown: false }}/>
-
+        
         <Stack.Screen name="ListaRecetas" component={ListaRecetas} options={{ headerShown: false }}/>
-
-
+    <Stack.Screen name="UploadRecipe" component={UploadRecipe} options={{headerShown: false}} />
+        
 
       </Stack.Navigator>
     </NavigationContainer>
