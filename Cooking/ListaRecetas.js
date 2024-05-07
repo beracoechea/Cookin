@@ -39,15 +39,11 @@ export default class ListaRecetas extends Component {
       });
   }
 
-  componentWillUnmount() {
-    // No hay necesidad de limpiar el intervalo ya que no se está utilizando
-  }
-
   renderReceta = (item) => {
     const imagenReceta = imagenesRecetas[item.Imagen];
     const estrellas = [];
     for (let i = 0; i < item.Estrellas; i++) {
-      estrellas.push(<Icon key={i} name="star" size={24} color="gold" />);
+      estrellas.push(<Icon key={i} name="star" size={24} color="#ffd700" />);
     }
   
     return (
@@ -81,7 +77,7 @@ export default class ListaRecetas extends Component {
     return (
       <View>
         <LinearGradient
-          colors={['#007A8C', '#456B6B']}
+          colors={['#422c1c', '#68442c']}
           style={styles.headerGradient}
         >
           <Text style={styles.headerTitle}>Recetario</Text>
@@ -138,7 +134,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    backgroundColor: '#005959',
+    backgroundColor: '#5c4a3c',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -167,7 +163,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   sectionTitle: {
-    color: '#005959',
+    color: '#422c1c',
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,

@@ -41,7 +41,7 @@ export default class Menu extends Component {
 
 						return <MaterialCommunityIcons name={iconName} color={color} size={size} />;
           },
-          tabBarActiveTintColor: '#456B6B', 
+          tabBarActiveTintColor: '#a17248', 
           tabBarInactiveTintColor: '#999999', 
           tabBarStyle: {
             backgroundColor: '#ffffff', 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity,Alert } from 'react-native';
+import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { getFirestore, doc, addDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
@@ -10,7 +10,6 @@ import files from './filesBase64';
 
 const firestore = getFirestore(appFirebase);
 
-
 const Receta = ({ route }) => {
   const { receta, imagenesRecetas } = route.params;
   const { email } = route.params; // Extraer el email de las propiedades del enrutador
@@ -19,22 +18,20 @@ const Receta = ({ route }) => {
   const [isArrowPressed, setIsArrowPressed] = useState(false); ///boton share
   const [isFavorited, setIsFavorited] = useState(false);
 
- const handleArrowPress = async () => {
-  setIsArrowPressed(!isArrowPressed);
-  const shareOptions = {
-    title: receta.Nombre,
-    message: `${receta.Nombre} Tiempo ${receta.Tiempo} minutos\n\nIngredientes: ${receta.Ingredientes.join(', ')}\n\nProceso: ${receta.Proceso.join('. ')} `, // Detalles de la receta
-    url: files.fondo,
+  const handleArrowPress = async () => {
+    setIsArrowPressed(!isArrowPressed);
+    const shareOptions = {
+      title: receta.Nombre,
+      message: `${receta.Nombre} Tiempo ${receta.Tiempo} minutos\n\nIngredientes: ${receta.Ingredientes.join(', ')}\n\nProceso: ${receta.Proceso.join('. ')} `, // Detalles de la receta
+      url: files.fondo,
+    };
 
+    try {
+      const shareResponse = await Share.open(shareOptions);
+    } catch (error) {
+      console.log('Error sharing:', error)
+    }
   };
-
-  try {
-    const shareResponse = await Share.open(shareOptions);
-  } catch (error) {
-    console.log('Error sharing:', error)
-  }
-};
-  
 
   useEffect(() => {
     checkIfFavorited();
@@ -115,16 +112,14 @@ const Receta = ({ route }) => {
           style={styles.imagen}
         />
         <TouchableOpacity onPress={addToFavorites} style={styles.favoriteIconContainer}>
-          <MaterialCommunityIcons name={isPressed ? 'bookmark' : 'bookmark-outline'} size={30} color={isPressed ? '#2D6E5C' : 'black'} />
+          <MaterialCommunityIcons name={isPressed ? 'bookmark' : 'bookmark-outline'} size={30} color={isPressed ? '#422c1c' : '#333333'} />
         </TouchableOpacity>
-      
-       
       </View>
       
       <View style={styles.headerContainer}>
-        <Text style={styles.titulo}>{receta.Nombre}</Text> 
+        <Text style={styles.titulo}>{receta.Nombre}</Text>
         <TouchableOpacity onPress={handleArrowPress} style={styles.shareIconContainer}>
-          <EvilIcons name={isArrowPressed ? 'share-google' : 'share-google'} size={35} color={isArrowPressed ? '#2D6E5C' : 'black'}  />
+          <EvilIcons name={isArrowPressed ? 'share-google' : 'share-google'} size={35} color={isArrowPressed ? '#422c1c' : '#333333'}  />
         </TouchableOpacity>
       </View>
       <Text style={styles.subtitulo}>Tiempo de preparación:</Text>
@@ -190,7 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#007f7f',
+    color: '#422c1c',
   },
   texto: {
     fontSize: 16,

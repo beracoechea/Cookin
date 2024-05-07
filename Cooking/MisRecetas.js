@@ -84,7 +84,7 @@ export default class ListaRecetas extends Component {
       <View>
         {/* Encabezado */}
         <LinearGradient
-          colors={['#007A8C', '#456B6B']}
+          colors={['#a17248','#422c1c']}
           style={styles.headerGradient}
         >
           <Text style={styles.headerTitle}>Recetario Favorito</Text>
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 50,
     padding: 10,
-    backgroundColor: '#005959',
+    backgroundColor: '#5c4a3c',
   },
   image: {
     width: 100,

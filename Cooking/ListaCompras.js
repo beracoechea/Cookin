@@ -65,7 +65,7 @@ class ListaCompras extends Component {
     return (
       <View style={styles.container}>
         <LinearGradient
-          colors={['#007A8C', '#456B6B']}
+          colors={['#422c1c', '#68442c']}
           style={styles.gradient}>
           <View style={styles.header}>
             <Text style={styles.title}>Lista de Compras</Text>
@@ -81,7 +81,7 @@ class ListaCompras extends Component {
               style={styles.itemContainer}
               onPress={() => this.toggleCompletado(item)}
             >
-              <View style={[styles.checkBox, { backgroundColor: this.state.ingredientesCompletados[item] ? '#4CAF50' : '#ffffff' }]}>
+              <View style={[styles.checkBox, { backgroundColor: this.state.ingredientesCompletados[item] ? '#a17248' : '#ffffff' }]}>
                 {this.state.ingredientesCompletados[item] && <Text style={styles.checkIcon}>✓</Text>}
               </View>
               <Text style={styles.itemText}>{item}</Text>
@@ -119,14 +119,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#5c4a3c',
   },
   checkBox: {
     width: 30,
     height: 30,
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: '#007f7f',
+    borderColor: '#a17248',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   checkIcon: {
     fontSize: 20,
-    color: '#007f7f',
+    color: '#fff',
   },
   itemText: {
     fontSize: 18,

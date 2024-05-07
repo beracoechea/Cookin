@@ -16,7 +16,7 @@ export default class Inicio extends Component {
     postreComio: false,
     colacionComio: false,
     modalVisible: false,
-		isChef: false,
+    isChef: false,
     usuario: {
       nombre: '',
       edad: '',
@@ -33,13 +33,14 @@ export default class Inicio extends Component {
     },
   };
 
-	constructor(props) {
-		super(props);
-		this.moveToRecipeUpload = this.moveToRecipeUpload.bind(this);
-	}
+  constructor(props) {
+    super(props);
+    this.moveToRecipeUpload = this.moveToRecipeUpload.bind(this);
+  }
 
   componentDidMount() {
     this.getUserBasicData();
+    this.getUserAdditionalData();
   }
 
   async getUserBasicData() {
@@ -56,11 +57,7 @@ export default class Inicio extends Component {
       console.error('Error al obtener los datos del usuario:', error);
     }
   }
-  async componentDidMount() {
-    // Cargar el resto de los datos del usuario en segundo plano
-    this.getUserAdditionalData();
-  }
-  
+
   async getUserAdditionalData() {
     const { email } = this.props.route.params;
     try {
@@ -84,7 +81,7 @@ export default class Inicio extends Component {
     const P = Math.round(1.2 * peso);
     const C = Math.round(6 * peso);
     const G = Math.round(0.35 * CT / 9);
-  
+
     this.setState({
       necesidadesNutricionales: {
         caloriasTotales: CT,
@@ -110,7 +107,7 @@ export default class Inicio extends Component {
       await updateDoc(doc(firestore, 'Usuarios', email), { [editedParam]: editedValue });
       this.setState({ modalVisible: false });
       await this.getUserAdditionalData();
-      } catch (error) {
+    } catch (error) {
       console.error('Error al actualizar los datos del usuario:', error);
     }
   };
@@ -171,16 +168,14 @@ export default class Inicio extends Component {
     }
   };
 
+  userHasPermission() {
+    // Check if the user is valid for upload recipes
+    return "isChef" in this.state && this.state.isChef;
+  }
 
-	userHasPermission() {
-		// Check if the user is valid for upload recipes
-		return "isChef" in this.state && this.state.isChef;
-	}
-
-	moveToRecipeUpload() {
-		this.props.navigation.navigate('UploadRecipe', { email: this.state.usuario.email });
-	}
-	
+  moveToRecipeUpload() {
+    this.props.navigation.navigate('UploadRecipe', { email: this.state.usuario.email });
+  }
 
   render() {
     const { desayuno, almuerzo, cena, colacion, postre } = this.state.usuario;
@@ -191,15 +186,15 @@ export default class Inicio extends Component {
     return (
       <View style={styles.container}>
         <LinearGradient
-          colors={['#007A8C', '#456B6B']}
+          colors={[ '#a17248','#422c1c']}
           style={styles.gradient}
         >
           <View style={styles.infoContainer}>
             <TouchableOpacity>
               {usuario.sexo === 'Hombre' ? (
-                <MaterialCommunityIcons name="gender-male" size={30} color="blue" style={styles.genderIcon} />
+                <MaterialCommunityIcons name="gender-male" size={30} color="#007BFF" style={styles.genderIcon} />
               ) : (
-                <MaterialCommunityIcons name="gender-female" size={30} color="red" style={styles.genderIcon} />
+                <MaterialCommunityIcons name="gender-female" size={30} color="#FF69B4" style={styles.genderIcon} />
               )}
             </TouchableOpacity>
             <View style={styles.infoRow}>
@@ -221,21 +216,39 @@ export default class Inicio extends Component {
           </View>
         </LinearGradient>
 
+                  {/* Indica las calorías a consumir del usuario */}
+              <View style={styles.header}>
+          <View style={styles.caloriesContainer}>
+            <LinearGradient
+              colors={['#a17248','#422c1c']} // Colores más oscuros para el gradiente
+              style={styles.circle} // Aplica el estilo del gradiente al contenedor del círculo
+            >
+              <Text style={styles.circleText}>{necesidadesNutricionales.caloriasTotales.toFixed(2)}</Text>
+              <Text style={styles.circleLabel}>Kcal</Text>
+            </LinearGradient>
+            <View style={styles.caloriesInfo}>
+              <Text style={styles.buttonText}>Proteínas: {necesidadesNutricionales.proteinas.toFixed(2)} g</Text>
+              <Text style={styles.buttonText}>Carbs: {necesidadesNutricionales.carbohidratos.toFixed(2)} g</Text>
+              <Text style={styles.buttonText}>Grasas: {necesidadesNutricionales.grasas.toFixed(2)} g</Text>
+            </View>
+          </View>
+        </View>
+
         <ScrollView contentContainerStyle={styles.scroll}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Horas de comida</Text>
           </View>
 
           <TouchableOpacity style={styles.infoField} onPress={() => this.handleMealConsumed('desayuno')} disabled={desayuno}>
-              <View style={styles.buttonRow}>
-                <View style={styles.dot} />
-                <Text style={styles.buttonText}>Desayuno 7:00 / 9:00 am</Text>
-                {desayuno ? (
-                  <MaterialCommunityIcons name="check" size={20} color="#abcabc" disabled={true} />
-                ) : (
-                  <FontAwesome5 name="check" size={20} color="#333" />
-                )}
-              </View>
+            <View style={styles.buttonRow}>
+              <View style={styles.dot} />
+              <Text style={styles.buttonText}>Desayuno 7:00 / 9:00 am</Text>
+              {desayuno ? (
+                <MaterialCommunityIcons name="check" size={20} color="#abcabc" disabled={true} />
+              ) : (
+                <FontAwesome5 name="check" size={20} color="#333" />
+              )}
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.infoField} onPress={() => this.handleMealConsumed('colacion')} disabled={colacion}>
@@ -286,8 +299,6 @@ export default class Inicio extends Component {
             </View>
           </TouchableOpacity>
 
-          {/* Resto de botones de comidas aquí */}
-
           <Modal
             animationType="slide"
             transparent={true}
@@ -314,32 +325,30 @@ export default class Inicio extends Component {
             </View>
           </Modal>
 
-
-					{
-						this.userHasPermission() &&
-							<TouchableOpacity style={styles.buttonAddNewRecipe} onPress={() => this.moveToRecipeUpload()}>
-								<MaterialCommunityIcons name="plus" size={32} color="white" />
-								<Text style={styles.textAddNewRecipe}>Agregar Recetas</Text>
-							</TouchableOpacity>
-					}
-					
+          {this.userHasPermission() && (
+            <TouchableOpacity style={styles.buttonAddNewRecipe} onPress={() => this.moveToRecipeUpload()}>
+              <MaterialCommunityIcons name="plus" size={32} color="#fff" />
+              <Text style={styles.textAddNewRecipe}>Agregar Recetas</Text>
+            </TouchableOpacity>
+          )}
+          
         </ScrollView>
-				</View>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-	textAddNewRecipe: {
-		fontSize: 18,
+  textAddNewRecipe: {
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
-	},
-	buttonAddNewRecipe: {
-		flexDirection: 'row', // Arrange items horizontally
+    color: '#a17248',
+  },
+  buttonAddNewRecipe: {
+    flexDirection: 'row',
     width: '100%',
     height: 50,
-    backgroundColor: '#008080',
+    backgroundColor: '#5c4a3c',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
@@ -365,7 +374,7 @@ const styles = StyleSheet.create({
   },
   editableFieldText: {
     fontSize: 12,
-    color: '#333',
+    color: '#fff',
   },
   buttonText: {
     fontSize: 14,
@@ -387,7 +396,7 @@ const styles = StyleSheet.create({
   infoTextName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
   },
   infoField: {
     flex: 1,
@@ -412,7 +421,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 7,
     paddingHorizontal: 10,
-    backgroundColor: '#00bcd4',
+    backgroundColor: '#4c453d',
     color: '#FFFFFF',
   },
   buttonContainer: {
@@ -433,8 +442,8 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000',
-    marginLeft:"20%",
+    color: '#353545',
+    marginLeft: "20%",
   },
   buttonRow: {
     flexDirection: 'row',
@@ -490,4 +499,4 @@ const styles = StyleSheet.create({
   caloriesInfo: {
     flex: 1,
   },
-})
+});
