@@ -1,17 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, Image, ScrollView, StyleSheet, TouchableOpacity,Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { getFirestore, doc, addDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import appFirebase from './credenciales';
+import Share from 'react-native-share';
+
+import files from './filesBase64';
 
 const firestore = getFirestore(appFirebase);
+
 
 const Receta = ({ route }) => {
   const { receta, imagenesRecetas } = route.params;
   const { email } = route.params; // Extraer el email de las propiedades del enrutador
 
   const [isPressed, setIsPressed] = useState(false);
+  const [isArrowPressed, setIsArrowPressed] = useState(false); ///boton share
   const [isFavorited, setIsFavorited] = useState(false);
+
+ const handleArrowPress = async () => {
+  setIsArrowPressed(!isArrowPressed);
+  const shareOptions = {
+    title: receta.Nombre,
+    message: `${receta.Nombre} Tiempo ${receta.Tiempo} minutos\n\nIngredientes: ${receta.Ingredientes.join(', ')}\n\nProceso: ${receta.Proceso.join('. ')} `, // Detalles de la receta
+    url: files.fondo,
+
+  };
+
+  try {
+    const shareResponse = await Share.open(shareOptions);
+  } catch (error) {
+    console.log('Error sharing:', error)
+  }
+};
+  
 
   useEffect(() => {
     checkIfFavorited();
@@ -94,9 +117,18 @@ const Receta = ({ route }) => {
         <TouchableOpacity onPress={addToFavorites} style={styles.favoriteIconContainer}>
           <MaterialCommunityIcons name={isPressed ? 'bookmark' : 'bookmark-outline'} size={30} color={isPressed ? '#2D6E5C' : 'black'} />
         </TouchableOpacity>
+      
+       
       </View>
-      <Text style={styles.titulo}>{receta.Nombre}</Text>
+      
+      <View style={styles.headerContainer}>
+        <Text style={styles.titulo}>{receta.Nombre}</Text> 
+        <TouchableOpacity onPress={handleArrowPress} style={styles.shareIconContainer}>
+          <EvilIcons name={isArrowPressed ? 'share-google' : 'share-google'} size={35} color={isArrowPressed ? '#2D6E5C' : 'black'}  />
+        </TouchableOpacity>
+      </View>
       <Text style={styles.subtitulo}>Tiempo de preparación:</Text>
+
       <Text style={styles.texto}>{receta.Tiempo} minutos</Text>
 
       <Text style={styles.subtitulo}>Ingredientes:</Text>
@@ -105,6 +137,7 @@ const Receta = ({ route }) => {
           {ingrediente}
         </Text>
       ))}
+
       <Text style={styles.subtitulo}>Proceso:</Text>
       {receta.Proceso.map((paso, index) => (
         <Text key={index} style={styles.texto}>
@@ -137,15 +170,21 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderRadius: 20,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   titulo: {
+    flex: 1, // Para que el título ocupe todo el espacio disponible
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333333',
-    textAlign: 'center',
+  },
+  shareIconContainer: {
+    marginLeft: 10, // Espacio entre el título y el botón de compartir
+    padding: 10,
   },
   subtitulo: {
     fontSize: 20,

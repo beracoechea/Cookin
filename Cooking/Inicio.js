@@ -39,18 +39,35 @@ export default class Inicio extends Component {
 	}
 
   componentDidMount() {
-    this.props.navigation.setOptions({
-      title: 'Perfil del Usuario',
-    });
+    this.getUserBasicData();
   }
 
-  getUserData = async () => {
+  async getUserBasicData() {
+    const { email } = this.props.route.params;
+    try {
+      const userDoc = await getDoc(doc(firestore, 'Usuarios', email));
+      if (userDoc.exists()) {
+        const { nombre, edad, peso, estatura } = userDoc.data();
+        this.setState({ usuario: { nombre, edad, peso, estatura } });
+      } else {
+        console.log('El documento de usuario no existe');
+      }
+    } catch (error) {
+      console.error('Error al obtener los datos del usuario:', error);
+    }
+  }
+  async componentDidMount() {
+    // Cargar el resto de los datos del usuario en segundo plano
+    this.getUserAdditionalData();
+  }
+  
+  async getUserAdditionalData() {
     const { email } = this.props.route.params;
     try {
       const userDoc = await getDoc(doc(firestore, 'Usuarios', email));
       if (userDoc.exists()) {
         const data = userDoc.data();
-        this.setState({ usuario: data, isChef: data.isChef });
+        this.setState({ usuario: { ...this.state.usuario, ...data }, isChef: data.isChef });
         this.calcularNecesidadesNutricionales(data);
       } else {
         console.log('El documento de usuario no existe');
@@ -58,7 +75,7 @@ export default class Inicio extends Component {
     } catch (error) {
       console.error('Error al obtener los datos del usuario:', error);
     }
-  };
+  }
 
   calcularNecesidadesNutricionales = (usuario) => {
     const { edad, estatura, peso } = usuario;
@@ -92,8 +109,8 @@ export default class Inicio extends Component {
     try {
       await updateDoc(doc(firestore, 'Usuarios', email), { [editedParam]: editedValue });
       this.setState({ modalVisible: false });
-      await this.getUserData();
-    } catch (error) {
+      await this.getUserAdditionalData();
+      } catch (error) {
       console.error('Error al actualizar los datos del usuario:', error);
     }
   };
@@ -147,7 +164,7 @@ export default class Inicio extends Component {
         [nextComida]: false
       });
 
-      await this.getUserData();
+      await this.getUserAdditionalData();
       this.setState({ ...nextState });
     } catch (error) {
       console.error('Error al actualizar los datos del usuario:', error);
