@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet, Dimensions } from 'react-native'; // Importa Dimensions
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, onSnapshot } from 'firebase/firestore'; // Importa onSnapshot
 import appFirebase from './credenciales';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -21,6 +21,16 @@ export default class ListaRecetas extends Component {
   componentDidMount() {
     // Obtener las recetas favoritas del usuario al cargar la pantalla por primera vez
     this.obtenerRecetasFavoritas();
+
+    // Suscribirse a cambios en la colección de favoritos para actualizar la lista en tiempo real
+    const { email } = this.props.route.params;
+    const favoritasRef = collection(firestore, `Usuarios/${email}/Favoritas`);
+    this.unsubscribe = onSnapshot(favoritasRef, this.actualizarRecetasFavoritas);
+  }
+
+  componentWillUnmount() {
+    // Desuscribirse de la suscripción para evitar memory leaks
+    this.unsubscribe();
   }
 
   obtenerRecetasFavoritas = () => {
@@ -36,6 +46,11 @@ export default class ListaRecetas extends Component {
       .catch((error) => {
         console.error("Error getting documents: ", error);
       });
+  };
+
+  actualizarRecetasFavoritas = (snapshot) => {
+    const recetas = snapshot.docs.map(doc => doc.data());
+    this.setState({ recetas });
   };
 
   renderReceta = (item) => {
@@ -109,7 +124,6 @@ export default class ListaRecetas extends Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
   imagenContainer: {
     marginRight: 10,
