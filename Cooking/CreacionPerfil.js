@@ -22,10 +22,11 @@ export default function UserProfile({ route }) {
   const [pesoUnit, setPesoUnit] = useState('kg');
   const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
 
-	 const [isChef, setIsChef] = useState(false);
+	const [isChef, setIsChef] = useState(false);
+	const [quiereAgregarRecetas, setQuiereAgregarRecetas] = useState(false);
 
   const handleToggle = () => {
-    setIsChef(!isChef);
+    setQuiereAgregarRecetas(!quiereAgregarRecetas);
   };
 
   useEffect(() => {
@@ -44,6 +45,7 @@ export default function UserProfile({ route }) {
         edad,
         sexo,
 				isChef,
+				quiereAgregarRecetas,
         estatura,
         estaturaUnit,
         peso,
@@ -52,6 +54,9 @@ export default function UserProfile({ route }) {
 
       console.log('Datos del usuario guardados correctamente.');
 
+			if (quiereAgregarRecetas)
+				alert("La solicitud de agregar recetas será revisada y, en caso de ser pertinente, aceptada.");
+			
       navigation.navigate('Alergias', { email: email });
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
@@ -149,9 +154,9 @@ export default function UserProfile({ route }) {
 							<Text style={styles.text}>Poder agregar recetas</Text>
 							<TouchableOpacity onPress={handleToggle} >
                 <MaterialCommunityIcons
-                  name={isChef ? 'checkbox-marked' : 'checkbox-blank-outline'}
+                  name={quiereAgregarRecetas ? 'checkbox-marked' : 'checkbox-blank-outline'}
                   size={32}
-                  color={isChef ? '#04D695' : 'white'}
+                  color={quiereAgregarRecetas ? '#04D695' : 'white'}
                 />
 							</TouchableOpacity>
 						</View>

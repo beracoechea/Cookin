@@ -59,7 +59,6 @@ export default class ListaRecetas extends Component {
     }
   
     const imagenReceta = imagenesRecetas[item.Imagen];
-  
     const estrellas = [];
     for (let i = 0; i < item.Estrellas; i++) {
       estrellas.push(<Icon key={i} name="star" size={24} color="gold" />);
