@@ -17,6 +17,7 @@ export default function UserProfile({ route }) {
   const [sexo, setSexo] = useState('');
   const [estatura, setEstatura] = useState('');
   const [peso, setPeso] = useState('');
+  
 	
   const [estaturaUnit, setEstaturaUnit] = useState('cm');
   const [pesoUnit, setPesoUnit] = useState('kg');

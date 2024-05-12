@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Modal, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, StyleSheet, ScrollView, TextInput,Image } from 'react-native';
 import { getFirestore, doc, getDoc, updateDoc} from 'firebase/firestore';
 import appFirebase from './credenciales';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -168,6 +168,18 @@ export default class Inicio extends Component {
     }
   };
 
+  handlePro = async () => {
+    const { email } = this.props.route.params;
+    const newValue = !this.state.isChef;
+    try {
+      await updateDoc(doc(firestore, 'Usuarios', email), { isChef: newValue });
+      this.setState({ isChef: newValue });
+    } catch (error) {
+      console.error('Error al actualizar los datos del usuario:', error);
+    }
+  };
+
+
   userHasPermission() {
     // Check if the user is valid for upload recipes
     return "isChef" in this.state && this.state.isChef;
@@ -180,6 +192,7 @@ export default class Inicio extends Component {
   render() {
     const { desayuno, almuerzo, cena, colacion, postre } = this.state.usuario;
     const { necesidadesNutricionales } = this.state;
+    const { isChef } = this.state;
 
     const { usuario, modalVisible, editedParam, editedValue} = this.state;
 
@@ -234,7 +247,7 @@ export default class Inicio extends Component {
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={styles.scroll}>
+        <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: isChef ? '10%' : '60%' }]}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Horas de comida</Text>
           </View>
@@ -325,12 +338,21 @@ export default class Inicio extends Component {
             </View>
           </Modal>
 
-          {this.userHasPermission() && (
-            <TouchableOpacity style={styles.buttonAddNewRecipe} onPress={() => this.moveToRecipeUpload()}>
-              <MaterialCommunityIcons name="plus" size={32} color="#fff" />
-              <Text style={styles.textAddNewRecipe}>Agregar Recetas</Text>
-            </TouchableOpacity>
-          )}
+          {!isChef && (
+        <TouchableOpacity style={styles.imageContainer} onPress={() => this.handlePro()}>
+          <Image source={require('./Images/goPro.jpg')} style={styles.ImagePro} />
+        
+        </TouchableOpacity>
+      )}
+
+      {/* Botón para agregar recetas */}
+      {this.userHasPermission() && (
+        <TouchableOpacity style={styles.buttonAddNewRecipe} onPress={() => this.moveToRecipeUpload()}>
+          <MaterialCommunityIcons name="plus" size={32} color="#fff" />
+          <Text style={styles.textAddNewRecipe}>Agregar Recetas</Text>
+        </TouchableOpacity>
+      )}
+      
           
         </ScrollView>
       </View>
@@ -433,7 +455,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
-    paddingTop: 10,
   },
   header: {
     marginBottom: 10,
@@ -498,5 +519,16 @@ const styles = StyleSheet.create({
   },
   caloriesInfo: {
     flex: 1,
+  },
+
+  imageContainer: {
+    height:'100%',
+    alignItems: 'center',
+    marginTop:30,
+  },
+  ImagePro:{
+      width:'40%',
+      height:'60%',
+      borderRadius:70,
   },
 });

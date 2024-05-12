@@ -48,9 +48,7 @@ export default function IniciarSesion() {
     }
   };
 
-	function handleBack(event) {
-		navigation.navigate('SeleccionInicio');
-	}
+
 
   return (
     <ImageBackground source={require('./Images/crear.jpg')} style={styles.container}>
@@ -91,10 +89,7 @@ export default function IniciarSesion() {
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Iniciar Sesión</Text>
         </TouchableOpacity>
-				
-				<TouchableOpacity style={styles.buttonBack} onPress={handleBack}>
-          <Text style={styles.buttonText}>Atrás</Text>
-        </TouchableOpacity>
+			
       </View>
     </ImageBackground>
   );

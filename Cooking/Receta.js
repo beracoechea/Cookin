@@ -5,6 +5,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { getFirestore, doc, addDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import appFirebase from './credenciales';
 import Share from 'react-native-share';
+import Comentarios from './Comentarios';
 
 import files from './filesBase64';
 
@@ -140,7 +141,9 @@ const Receta = ({ route }) => {
         </Text>
       ))}
 
+      <Comentarios receta={receta}  />
       <View style={styles.divider}></View>
+      
     </ScrollView>
   );
 };
