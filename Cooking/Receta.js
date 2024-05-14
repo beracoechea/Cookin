@@ -12,25 +12,24 @@ import files from './filesBase64';
 const firestore = getFirestore(appFirebase);
 
 const Receta = ({ route }) => {
-  const { receta, imagenesRecetas } = route.params;
-  const { email } = route.params; // Extraer el email de las propiedades del enrutador
+  const { receta, imagenesRecetas, email } = route.params;
 
   const [isPressed, setIsPressed] = useState(false);
-  const [isArrowPressed, setIsArrowPressed] = useState(false); ///boton share
+  const [isArrowPressed, setIsArrowPressed] = useState(false); 
   const [isFavorited, setIsFavorited] = useState(false);
 
   const handleArrowPress = async () => {
     setIsArrowPressed(!isArrowPressed);
     const shareOptions = {
       title: receta.Nombre,
-      message: `${receta.Nombre} Tiempo ${receta.Tiempo} minutos\n\nIngredientes: ${receta.Ingredientes.join(', ')}\n\nProceso: ${receta.Proceso.join('. ')} `, // Detalles de la receta
+      message: `${receta.Nombre} Tiempo ${receta.Tiempo} minutos\n\nIngredientes: ${receta.Ingredientes.join(', ')}\n\nProceso: ${receta.Proceso.join('. ')} `,
       url: files.fondo,
+      
     };
 
     try {
-      const shareResponse = await Share.open(shareOptions);
+      await Share.open(shareOptions);
     } catch (error) {
-      console.log('Error sharing:', error)
     }
   };
 
@@ -40,18 +39,14 @@ const Receta = ({ route }) => {
 
   const checkIfFavorited = async () => {
     try {
-      // Obtener la referencia a la colección de favoritos del usuario
       const userRef = doc(firestore, 'Usuarios', email);
       const favoritesRef = collection(userRef, 'Favoritas');
-
-      // Realizar una consulta para verificar si la receta ya está en favoritos
       const querySnapshot = await getDocs(favoritesRef);
       const favoritedRecipes = querySnapshot.docs.map(doc => doc.data());
-
-      // Verificar si la receta está en la lista de recetas favoritas
       const isAlreadyFavorited = favoritedRecipes.some(recipe => recipe.Nombre === receta.Nombre);
       setIsFavorited(isAlreadyFavorited);
-      setIsPressed(isAlreadyFavorited); // Si ya está en favoritos, el ícono debe estar iluminado
+      setIsPressed(isAlreadyFavorited);
+      
     } catch (error) {
       console.error('Error checking if recipe is favorited:', error);
     }
@@ -60,15 +55,12 @@ const Receta = ({ route }) => {
   const addToFavorites = async () => {
     try {
       if (!isFavorited) {
-        // Si la receta no está en favoritos, agrégala
         const userRef = doc(firestore, 'Usuarios', email);
         const favoritesRef = collection(userRef, 'Favoritas');
         await addDoc(favoritesRef, receta);
         setIsFavorited(true);
         setIsPressed(true);
-        console.log('Recipe added to favorites');
       } else {
-        // Si la receta ya está en favoritos, mostrar confirmación antes de eliminar
         Alert.alert(
           'Eliminar receta',
           '¿Estás seguro de que quieres eliminar esta receta de tus favoritos?',
@@ -87,10 +79,9 @@ const Receta = ({ route }) => {
                 const favoritedRecipes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 const favoritedRecipe = favoritedRecipes.find(recipe => recipe.Nombre === receta.Nombre);
                 if (favoritedRecipe && favoritedRecipe.id) {
-                  await deleteDoc(doc(favoritesRef, favoritedRecipe.id)); // Eliminar la receta de favoritos
+                  await deleteDoc(doc(favoritesRef, favoritedRecipe.id));
                   setIsFavorited(false);
                   setIsPressed(false);
-                  console.log('Recipe removed from favorites');
                 } else {
                   console.error('Error: favorited recipe not found or ID is empty');
                 }
@@ -120,11 +111,10 @@ const Receta = ({ route }) => {
       <View style={styles.headerContainer}>
         <Text style={styles.titulo}>{receta.Nombre}</Text>
         <TouchableOpacity onPress={handleArrowPress} style={styles.shareIconContainer}>
-          <EvilIcons name={isArrowPressed ? 'share-google' : 'share-google'} size={35} color={isArrowPressed ? '#422c1c' : '#333333'}  />
+          <EvilIcons name="share-google" size={35} color={isArrowPressed ? '#422c1c' : '#333333'}  />
         </TouchableOpacity>
       </View>
       <Text style={styles.subtitulo}>Tiempo de preparación:</Text>
-
       <Text style={styles.texto}>{receta.Tiempo} minutos</Text>
 
       <Text style={styles.subtitulo}>Ingredientes:</Text>
@@ -141,7 +131,7 @@ const Receta = ({ route }) => {
         </Text>
       ))}
 
-      <Comentarios receta={receta}  />
+        <Comentarios receta={receta} email={email} />
       <View style={styles.divider}></View>
       
     </ScrollView>
@@ -174,14 +164,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   titulo: {
-    flex: 1, // Para que el título ocupe todo el espacio disponible
+    flex: 1,
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#333333',
   },
   shareIconContainer: {
-    marginLeft: 10, // Espacio entre el título y el botón de compartir
+    marginLeft: 10,
     padding: 10,
   },
   subtitulo: {
