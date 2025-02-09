@@ -67,8 +67,8 @@ export default function ListaRecetas() {
             <Text style={styles.nombre}>{item.Nombre}</Text>
             <View style={styles.detalle}>{estrellas}</View>
             <View style={styles.detalle}>
-              <Text style={styles.etiqueta}>Tiempo:</Text>
-              <Text>{item.Tiempo}min</Text>
+              <Text style={styles.etiqueta}>Tiempo: </Text>
+              <Text>{item.Tiempo}min </Text>
             </View>
           </View>
         </View>
@@ -77,7 +77,7 @@ export default function ListaRecetas() {
   };
 
   const verReceta = (item) => {
-    // Función de navegación, puedes agregar la lógica aquí
+    router.push('../Receta/Receta',{receta:item});
   };
 
   return (
