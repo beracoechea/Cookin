@@ -1,40 +1,54 @@
-import React, { useCallback, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import Colors from '../../constants/Colors';
-import { useOAuth } from '@clerk/clerk-expo';
 import * as Linking from 'expo-linking';
+import Colors from '../../constants/Colors';
+import { useOAuth, useAuth } from '@clerk/clerk-expo';
+import { useRouter } from 'expo-router';
 
-export const useWarmUpBrowser = () => {
-  React.useEffect(() => {
-    void WebBrowser.warmUpAsync();
+// Hook para optimizar WebBrowser
+const useWarmUpBrowser = () => {
+  useEffect(() => {
+    WebBrowser.warmUpAsync();
     return () => {
-      void WebBrowser.coolDownAsync();
+      WebBrowser.coolDownAsync();
     };
   }, []);
 };
 
-
 WebBrowser.maybeCompleteAuthSession();
 
-export default function CargaScreen() {
-  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' });
-  const AuthUser = useCallback(async () => {
+const SignInWithOAuth = () => {
+  useWarmUpBrowser();
+  const router = useRouter(); 
+  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { isSignedIn } = useAuth(); 
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push('/(tabs)/home');
+    }
+  }, [isSignedIn, router]);
+
+  const onPress = useCallback(async () => {
+    setLoading(true);
     try {
-      const { createdSessionId } = await startOAuthFlow({
-        redirectUrl: Linking.createURL('/(tabs)/home', { schema: 'myapp' }),
+      console.log("Iniciando autenticación con Google...");
+      const { createdSessionId, setActive } = await startOAuthFlow({
+        redirectUrl: Linking.createURL('Dashboard'),
       });
 
-      // Validamos si se ha creado una sesión y solo redirigimos si el createdSessionId es válido
-      if (createdSessionId) {
-        setLoading(false); // Ya se ha creado la sesión, cambiamos el estado
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        console.log("✅ Sesión iniciada con éxito:", createdSessionId);
       } else {
-        // Error al crear sesión o no se ha recibido createdSessionId
-        setLoading(true);
+        console.warn("⚠️ Autenticación cancelada o fallida.");
       }
     } catch (err) {
-      console.error('OAuth error:', err);
-      setLoading(true);
+      console.error("❌ Error en la autenticación:", err);
+    } finally {
+      setLoading(false);
     }
   }, [startOAuthFlow]);
 
@@ -45,10 +59,11 @@ export default function CargaScreen() {
     Colors.FondoSeccion,
   ];
 
+
   return (
     <ImageBackground source={require('../../assets/images/Seleccion.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={AuthUser}>
+        <TouchableOpacity style={styles.button} onPress={onPress}>
           <Text style={styles.buttonText}>Iniciar sesión con Google</Text>
         </TouchableOpacity>
       </View>
