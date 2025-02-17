@@ -1,16 +1,19 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-expo';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Colors from '../../constants/Colors';
 import { db } from '../../config/firebaseConfig';
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function Header() {
+  const router = useRouter();
   const { user } = useUser();
   const [isUserSaved, setIsUserSaved] = useState(false); // Estado para evitar múltiples escrituras
   const [userData, setUserData] = useState(null); // Datos del usuario
+
+
 
   useEffect(() => {
     const saveUserToFirestore = async () => {
@@ -56,11 +59,11 @@ export default function Header() {
         marginTop: 30,
         marginRight: 20,
       }}>
-        <MaterialIcons
-          name="pets"
+        <MaterialCommunityIcons
+          name="chef-hat"
           size={40}
-          color={Colors.Secundario}
-          style={{ transform: [{ rotate: '310deg' }] }} // Rotación del ícono
+          color={Colors.Contraste}
+          style={{ transform: [{ rotate: '320deg' }] }} 
         />
         <View style={{ alignItems: 'center' }}>
           <Text style={{
@@ -75,16 +78,19 @@ export default function Header() {
           }}>{user?.fullName || "Cargando..."}</Text>
         </View>
 
-       <Link href={'/(tabs)/profile'} >
-        <Image
-          source={{ uri: user?.imageUrl }}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 99,
-          }}
-        />
-        </Link>
+          <TouchableOpacity onPress={() => router.push('/form-user')}>
+          <Image
+            source={{ uri: user?.imageUrl }}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 99,
+            }}
+          />
+
+          </TouchableOpacity>
+          
+
       </View>
   );
 }

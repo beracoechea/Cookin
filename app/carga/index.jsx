@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import * as Linking from 'expo-linking';
 import Colors from '../../constants/Colors';
 import { useOAuth, useAuth } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
@@ -36,7 +35,6 @@ const SignInWithOAuth = () => {
     try {
       console.log("Iniciando autenticación con Google...");
       const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL('Dashboard'),
       });
 
       if (createdSessionId && setActive) {
@@ -59,17 +57,23 @@ const SignInWithOAuth = () => {
     Colors.FondoSeccion,
   ];
 
-
   return (
     <ImageBackground source={require('../../assets/images/Seleccion.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={onPress}>
-          <Text style={styles.buttonText}>Iniciar sesión con Google</Text>
+
+        <TouchableOpacity style={styles.button} onPress={onPress} disabled={loading}>
+          {loading ? (
+            <ActivityIndicator color="white" size="small" />
+          ) : (
+            <Text style={styles.buttonText}>Iniciar sesión con Google</Text>
+          )}
         </TouchableOpacity>
+
+        
       </View>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -113,3 +117,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,         
   },
 });
+
+export default SignInWithOAuth;
+
