@@ -59,6 +59,7 @@ export default function RootLayout() {
       options={{
         headerShown:false,
       }}/>
+
       
     </Stack>
     </ClerkProvider>

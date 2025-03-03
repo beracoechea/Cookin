@@ -5,7 +5,7 @@ export default class Recetario extends Component {
   render() {
     return (
       <View >
-        <Text>hola</Text>
+        
       </View>
     )
   }
