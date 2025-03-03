@@ -1,5 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  setDoc, 
+  doc, 
+  getDocs 
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -10,9 +17,8 @@ const firebaseConfig = {
   appId: "1:798269608528:web:f58afe26728f724ae5f755"
 };
 
-
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app); // Obtén la instancia de Firestore
 
-export { db };
+export { db, collection, addDoc, setDoc, doc, getDocs };
