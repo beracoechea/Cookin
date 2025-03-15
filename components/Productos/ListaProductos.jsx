@@ -67,7 +67,7 @@ const ListaProductos = () => {
                   onPress={() => handleSeleccionAlimento(categoria, alimento.nombre.trim())}
                 >
                   <MaterialCommunityIcons name={alimento.icono} size={24} color="#333" />
-                  <Text style={styles.alimentoText}>{alimento.nombre.trim()} </Text>
+                  <Text style={styles.alimentoText}>{alimento.nombre.trim()}   </Text>
                 </TouchableOpacity>
               ))}
             </View>

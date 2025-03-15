@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useUser } from '@clerk/clerk-expo';
 import { db, collection, doc, getDocs, updateDoc } from '../../config/firebaseConfig';
+import { onSnapshot } from "firebase/firestore";
 
 const ListaSuper = () => {
   const { user } = useUser();
@@ -13,67 +14,63 @@ const ListaSuper = () => {
 
   useEffect(() => {
     if (userId) {
-      fetchListaSuper();
+      const userRef = doc(db, 'Users', userId);
+      const superCollectionRef = collection(userRef, 'IngredientesSeleccionados');
+  
+      const unsubscribe = onSnapshot(superCollectionRef, (querySnapshot) => {
+        if (querySnapshot.empty) {
+          setMensaje('No se ha registrado ningún artículo todavía.');
+          setProductos([]);
+        } else {
+          const data = querySnapshot.docs[0].data();
+          const ingredientes = Object.entries(data.seleccionados || {}).flatMap(([categoria, items]) =>
+            items.map(item => ({ nombre: item, categoria, comprado: false }))
+          );
+  
+          setProductos(ingredientes);
+          setMensaje(ingredientes.length === 0 ? 'No se ha registrado ningún artículo todavía.' : '');
+        }
+        setCargando(false);
+      });
+  
+      return () => unsubscribe(); // Se desuscribe al desmontar el componente
     }
   }, [userId]);
 
-  const fetchListaSuper = async () => {
-    setCargando(true);
-    try {
-      const userRef = doc(db, 'Users', userId);
-      const superCollectionRef = collection(userRef, 'IngredientesSeleccionados');
-      const querySnapshot = await getDocs(superCollectionRef);
-
-      if (querySnapshot.empty) {
-        setMensaje('No se ha registrado ningún artículo todavía.');
-        setProductos([]);
-      } else {
-        const data = querySnapshot.docs[0].data();
-        const ingredientes = Object.entries(data.seleccionados || {}).flatMap(([categoria, items]) =>
-          items.map(item => ({ nombre: item, categoria, comprado: false }))
-        );
-
-        if (ingredientes.length === 0) {
-          setMensaje('No se ha registrado ningún artículo todavía.');
-        } else {
-          setMensaje('');
-        }
-
-        setProductos(ingredientes);
-      }
-    } catch (error) {
-      console.error('❌ Error al obtener la lista de compras:', error);
-      setMensaje('Error al cargar la lista.');
-    } finally {
-      setCargando(false);
-    }
-  };
-
   const toggleComprado = async (index) => {
-    const nuevaLista = [...productos];
-    nuevaLista[index].comprado = !nuevaLista[index].comprado;
-    setProductos(nuevaLista);
-
     try {
+      const ingredienteAEliminar = productos[index];
+      const nuevaLista = productos.filter((_, i) => i !== index); // Elimina el ingrediente
+      setProductos(nuevaLista); // Actualiza la UI
+  
       const userRef = doc(db, 'Users', userId);
       const superCollectionRef = collection(userRef, 'IngredientesSeleccionados');
       const querySnapshot = await getDocs(superCollectionRef);
-
+  
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref;
-        await updateDoc(docRef, {
-          seleccionados: nuevaLista.reduce((acc, item) => {
-            if (!acc[item.categoria]) acc[item.categoria] = [];
-            acc[item.categoria].push(item.nombre);
-            return acc;
-          }, {}),
-        });
-        console.log('✅ Lista actualizada en Firestore.');
+        const docData = querySnapshot.docs[0].data();
+  
+        // Filtra el ingrediente de la categoría correspondiente
+        const nuevosSeleccionados = { ...docData.seleccionados };
+        nuevosSeleccionados[ingredienteAEliminar.categoria] = nuevosSeleccionados[ingredienteAEliminar.categoria].filter(
+          item => item !== ingredienteAEliminar.nombre
+        );
+  
+        // Si la categoría queda vacía, la eliminamos
+        if (nuevosSeleccionados[ingredienteAEliminar.categoria].length === 0) {
+          delete nuevosSeleccionados[ingredienteAEliminar.categoria];
+        }
+  
+        await updateDoc(docRef, { seleccionados: nuevosSeleccionados });
+  
+        console.log(`✅ Ingrediente eliminado: ${ingredienteAEliminar.nombre}`);
       }
     } catch (error) {
-      console.error('❌ Error al actualizar la lista:', error);
+      console.error("❌ Error al eliminar el ingrediente:", error);
     }
   };
+  
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity style={styles.item} onPress={() => toggleComprado(index)}>
@@ -82,19 +79,19 @@ const ListaSuper = () => {
         size={24}
         color={item.comprado ? 'green' : 'gray'}
       />
-      <Text style={[styles.text, item.comprado && styles.comprado]}>{item.nombre}</Text>
+      <Text style={[styles.text, item.comprado && styles.comprado]}>{item.nombre} </Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🛒 Lista de Compras</Text>
+      <Text style={styles.title}>🛒 Lista de Compras </Text>
 
       {cargando ? (
         <Text style={styles.mensaje}>Cargando...</Text>
       ) : mensaje ? (
         <View style={styles.mensajeContainer}>
-          <Text style={styles.mensaje}>{mensaje}</Text>
+          <Text style={styles.mensaje}>{mensaje}  </Text>
         </View>
       ) : (
         <FlatList
