@@ -1,91 +1,113 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Text, View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { db } from '../../config/firebaseConfig';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { useUser } from '@clerk/clerk-expo';
+import { useRouter } from 'expo-router';
 
-export default function MisRecetas() {
-  const dias = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
-  const [diaSeleccionado, setDiaSeleccionado] = useState(dias[0]);
+const MisRecetas = () => {
+  const { user } = useUser(); // Obtener el usuario autenticado
+  const router = useRouter(); // Hook para la navegación
+  const [recetasFavoritas, setRecetasFavoritas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const recetasPorDia = {
-    domingo: ["Ensalada César", "Pollo al horno"],
-    lunes: ["Avena con frutas", "Sándwich integral"],
-    martes: ["Pasta con tomate", "Sopa de verduras"],
-    miércoles: ["Pescado a la plancha", "Arroz con lentejas"],
-    jueves: ["Batido de proteínas", "Tostadas con aguacate"],
-    viernes: ["Pizza casera", "Ensalada mixta"],
-    sábado: ["Tacos de pollo", "Frutas con yogur"]
-  };
+  useEffect(() => {
+    if (!user) return;
+
+    const favoritosRef = collection(db, 'Users', user.id, 'Favoritos');
+    
+    // Escuchar cambios en la colección de favoritos en tiempo real
+    const unsubscribe = onSnapshot(favoritosRef, async (querySnapshot) => {
+      const recetasFavoritas = [];
+
+      for (const favoritoDoc of querySnapshot.docs) {
+        const recetaId = favoritoDoc.data().recetaId; // Obtener el ID de la receta
+        const recetaRef = doc(db, 'Recetas', recetaId);
+        const recetaDoc = await getDoc(recetaRef);
+
+        if (recetaDoc.exists()) {
+          recetasFavoritas.push({ id: recetaId, ...recetaDoc.data() });
+        }
+      }
+
+      setRecetasFavoritas(recetasFavoritas);
+      setLoading(false);
+    });
+
+    return () => unsubscribe(); // Limpiar el listener cuando el componente se desmonte
+  }, [user]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Cargando... </Text>
+      </View>
+    );
+  }
+
+  if (recetasFavoritas.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>No tienes recetas favoritas. </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mis Recetas</Text>
-
-      <View style={styles.tabsWrapper}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
-          contentContainerStyle={styles.tabsContainer}
-        >
-          {dias.map((dia) => (
-            <TouchableOpacity
-              key={dia}
-              style={[styles.tab, dia === diaSeleccionado && styles.tabActive]}
-              onPress={() => setDiaSeleccionado(dia)}
-            >
-              <Text style={[styles.tabText, dia === diaSeleccionado && styles.tabTextActive]}>
-                {dia.toUpperCase()}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      <View style={styles.content}>
-        <Text style={styles.diaTitle}>{diaSeleccionado.toUpperCase()}</Text>
-        {recetasPorDia[diaSeleccionado].map((receta, index) => (
-          <Text key={index} style={styles.recetaItem}>{`🍽️ ${receta}`}</Text>
-        ))}
-      </View>
+      <FlatList
+        data={recetasFavoritas}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.recipeButton}
+            onPress={() => router.push(`/receta?id=${item.id}`)}
+          >
+            <Text style={styles.recipeTitle}>{item.nombre || 'Receta sin nombre'}</Text>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 50, alignItems: "center", backgroundColor: "#f5f5f5" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
-
-  tabsWrapper: { maxHeight: 50, width: "100%" },
-  tabsContainer: { flexDirection: "row", paddingHorizontal: 10 },
-
-  tab: {
-    backgroundColor: "#E0E0E0",
-    paddingVertical: 6, 
-    paddingHorizontal: 12,
-    marginHorizontal: 4,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    borderBottomWidth: 2,
-    borderBottomColor: "transparent",
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
   },
-  tabActive: {
-    backgroundColor: "#FF9800",
-    borderBottomColor: "#D84315",
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  tabText: { fontSize: 13, fontWeight: "bold", color: "#333" },
-  tabTextActive: { color: "#FFF" },
-
-  content: {
-    flex: 1, 
-    backgroundColor: "#FFF",
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#555',
+  },
+  recipeButton: {
     padding: 15,
-    width: "90%",
+    borderWidth: 1,
+    borderColor: '#ccc',
+    marginVertical: 5,
     borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-    marginTop: 10,
+    backgroundColor: '#f9f9f9',
   },
-  diaTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center" },
-  recetaItem: { fontSize: 16, paddingVertical: 5, textAlign: "center" },
+  recipeTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
 });
+
+export default MisRecetas;
