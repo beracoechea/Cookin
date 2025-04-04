@@ -17,7 +17,8 @@
         "foregroundImage": "./assets/images/fondo.jpg",
         "backgroundColor": "#ffffff",
         "package": "com.cooking.Cooking"
-      }
+      },
+      "package": "com.cooking.Cooking"
     },
     "web": {
       "bundler": "metro",
@@ -25,8 +26,6 @@
       "favicon": "./assets/images/fondo.jpg"
     },
     "plugins": [
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
       "expo-router",
       [
         "expo-splash-screen",
@@ -42,6 +41,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7e799a7c-cfe3-4be9-9f8b-7e01cb8879e6"
+      }
+    },
+    "owner": "beracoechea"
   }
 }
