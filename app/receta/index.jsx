@@ -60,9 +60,20 @@ const DetalleReceta = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <RecetaHeader receta={receta} /> 
+        <RecetaHeader receta={receta} />
         <RecetaDetalles receta={receta} />
         <BotonFavoritos recetaId={id} />
+
+        {/* Imagen al final usando la URL de Firebase */}
+        {receta.url && (
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: receta.url }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -75,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   scrollContainer: {
-    paddingBottom: 20,
+    paddingBottom: 40,
   },
   loadingContainer: {
     flex: 1,
@@ -94,6 +105,16 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     color: 'red',
+  },
+  imageContainer: {
+    marginTop: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
   },
 });
 
